@@ -1,2 +1,2 @@
 # BOATS
-BiOeconomic mArine Trophic Size-spectrum Model
+BiOeconomic mArine Trophic Size-spectrum Model.
