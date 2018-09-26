@@ -149,14 +149,14 @@ if create_ecology
         plot_domain2D(temperature,lon,lat,mask,'temperature [deg C]',3)
     end
     % Save forcing
-    Ecology.mask=mask;
-    Ecology.lon=lon;
-    Ecology.lat=lat;
-    Ecology.surface=surface;
-    Ecology.npp=npp;
-    Ecology.npp_ed=npp_ed;
-    Ecology.temperature=temperature;
-    save('Ecology.mat','Ecology')
+    Ecological.mask=mask;
+    Ecological.lon=lon;
+    Ecological.lat=lat;
+    Ecological.surface=surface;
+    Ecological.npp=npp;
+    Ecological.npp_ed=npp_ed;
+    Ecological.temperature=temperature;
+    save('Ecological.mat','Ecological','-v7.3')
 end
 
 % Load and convert economical forcing *************  
@@ -184,10 +184,10 @@ if create_economy
         plot_domain1D(1:length(catchability),catchability,'time','catchability [m^2 W^-1 s^-1]',7)
     end
     % Save forcing
-    Economy.price=price;
-    Economy.cost=cost;
-    Economy.catchability=catchability;
-    save('Economy.mat','Economy')
+    Economical.price=price;
+    Economical.cost=cost;
+    Economical.catchability=catchability;
+    save('Economical.mat','Economical','-v7.3')
 end
 
 % Load and convert regulation forcing ************  
@@ -205,7 +205,7 @@ if create_regulation
     % Save forcing
     Regulation.efftarg=efftarg;
     %(MODIF)
-    save('Regulation.mat','Regulation')
+    save('Regulation.mat','Regulation','-v7.3')
 end
 disp('Done !')
 
