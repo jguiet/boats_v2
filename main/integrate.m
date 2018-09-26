@@ -82,7 +82,7 @@ function boats = integrate(boats)
  %-----------------------------------------------------------------------------------------
  % Initialize biological arrays
  en_input_P             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- en_input_vb        	= nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+ en_input_vb        	   = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
  en_input               = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
  gamma                  = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
  flux_in                = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
@@ -119,12 +119,12 @@ function boats = integrate(boats)
    %-----------------------------------------------------------------------------------------
    % Initialize some additional output array
    catchability_used 	= nan(1,ntime);
-   price_used           = nan(1,ntime);
-   cost_effort_used 	= nan(1,ntime);
+   price_used         = nan(1,ntime);
+   cost_effort_used 	 = nan(1,ntime);
 
    %-----------------------------------------------------------------------------------------
    % Effort initial condition
-   effort(:,:,:)        =  boats.initial.effort;
+   effort(:,:,:)      =  boats.initial.effort;
    
  end
 
@@ -302,8 +302,8 @@ function boats = integrate(boats)
 for indt = 1:ntime
 
   % local month
-  local_month = ceil((mod(time(indt),CONV.spery)/CONV.spery)*12);
-  if local_month==0;local_month=12;end
+  local_month = ceil((mod(time(indt),CONV.sperfrc)/CONV.sperfrc)*MAIN.nforcing);
+  if local_month==0;local_month=MAIN.nforcing;end
   disp(['indt : ' num2str(indt) ' / ' num2str(ntime) ' - local month : ' num2str(local_month)]);
 
   %---------------------------------------------------------------------------------------

@@ -18,8 +18,9 @@
  boats.param.main.save_restart = 1;                                        % Save restart: yes=1 ; no=0
  boats.param.main.save_output  = 1;                                        % Save output: yes=1 ; no=0
 % Simulation features *****************************
- boats.param.main.run_length   = 1;                                      % Simulation length in years 
+ boats.param.main.run_length   = 1;                                        % Simulation length in years 
  boats.param.main.dtt          = 30;                                       % days per timestep
+ boats.param.main.nforcing     = 12;                                       % number of forcing to loop
  boats.param.main.param_ens    = 1;                                        % Use parameters ensembles: yes=1 ; no=0
  boats.param.main.dataset_ens  = 'ensemble_parameters.mat';                % if param_ens=1 name of ensemble parameters
 %**************************************************************************
@@ -32,6 +33,9 @@
 %**************************************************************************
  boats.param.conversion.sperd        = 3600*24;                            % seconds per day
  boats.param.conversion.spery        = boats.param.conversion.sperd*360;   % seconds per year
+ boats.param.conversion.sperfrc      = boats.param.conversion.sperd...
+                                       *boats.param.main.dtt...
+                                       *boats.param.main.nforcing;         % seconds per forcing
  boats.param.conversion.gC_2_wetB    = 10;                                 % grams of wet fish biomass per gram of fish carbon
  boats.param.conversion.mmolC_2_wetB = (12*boats.param.conversion.gC_2_wetB)/1000; % grams of wet fish biomass per mmol of fish carbon
  boats.param.conversion.C_2_K        = 273.15;                             % deg C to Kelvin
