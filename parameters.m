@@ -8,13 +8,13 @@
 % MAIN TUNABLE PARAMETERS
 %**************************************************************************
 % Paths *******************************************
- boats.param.path.wrkdir = ['/media/jerome/Data/Boats/src/BOATS_VB1/'];
- boats.param.path.outdir = ['/media/jerome/Data/Boats/ScotianShelf/testVB1/'];
+ boats.param.path.wrkdir = ['/Users/jguiet/OneDrive - University of California/BOATS/src/BOATS'];
+ boats.param.path.outdir = ['/Users/jguiet/OneDrive - University of California/BOATS/src/BOATS'];
 % Names and Switches ******************************
- boats.param.main.sim_type     = 'h';                                     % No Harvest 'nh' or Harvest simulations 'h'
+ boats.param.main.sim_type     = 'nh';                                     % No Harvest 'nh' or Harvest simulations 'h'
  boats.param.main.sim_init     = 'restart';                                % Initialisation from 'PP' or else 'resstart'
- boats.param.main.sim_name     = 'Boats_VB1';                              % Simulation name
- boats.param.main.model_version= 'VB1';                                    % Model version
+ boats.param.main.sim_name     = 'Boats_V2';                              % Simulation name
+ boats.param.main.model_version= 'V2';                                    % Model version
  boats.param.main.save_restart = 1;                                        % Save restart: yes=1 ; no=0
  boats.param.main.save_output  = 1;                                        % Save output: yes=1 ; no=0
 % Simulation features *****************************
