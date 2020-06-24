@@ -16,7 +16,7 @@
 
 % Bioeconomic Open-Access Trophic Size-Spectrum (BOATS) model based on the
 % McKendrick-von Foerster model for a mass-spectrum of fish biomass
-% with an open access economic framework to calculate effort and harveSTRU.
+% with an open access economic framework to calculate effort and harvest.
 % Forced with monthly primary production and temperature data (from model or observations)
 
 % Primary production in units of mmolC m-2 s-1
@@ -38,13 +38,13 @@
 % This guarantees that as effort approaches zero, the effort change equation approaches 
 % the analytical simplification. This prevents dividing by zero.
 % We cannot use the analytical simplification of the change in effort directly because we
-% limit harvest and we need harvest directly to calculate revenue.yy
+% limit harvest and we need harvest directly to calculate revenue.
 
 % dbianchi 04/16/2016 : output routine changed to allow for general and flexible 
 % output "modes". Each mode specifies the variables to be saved, the processing of variables
 % (e.g. averages, integrals) and the interval time used for averaging variables (e.g. annual,
 % decadal, final timestep, user defined etc.) Additionally, the main calculations were 
-% optimized for fast matrix calculations using "bsxfun", and tested with matlab's built-in 
+% optimized for fast array calculations using "bsxfun", and tested with matlab's built-in 
 % profiler.
 
 %**************************************************************************************************************
