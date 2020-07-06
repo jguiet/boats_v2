@@ -36,8 +36,8 @@
 % PREPARE SIMULATION
 %**************************************************************************
 % Forcings datasets *******************************
- forcing_ecological='Ecological.mat';
- forcing_economical='Economical.mat';
+ forcing_ecological='frc/Ecological.mat';
+ forcing_economical='frc/Economical.mat';
 % Make output/restar dirs *************************
  if ~exist(boats.param.path.outdir)
     mkdir(boats.param.path.outdir)

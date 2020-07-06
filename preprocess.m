@@ -31,49 +31,49 @@ clear all
 plot_input = 1;                                     % (yes 1 or no 0)
 create_ecology = 1;                                 % (yes 1 or no 0)
 create_economy = 1;                                 % (yes 1 or no 0)
-create_regulation = 1;                              % (yes 1 or no 0)
+create_regulation = 0;                              % (yes 1 or no 0)
 
 % General forcing paths and characteristics ********
-nlat = 240;                                         % nlat = m nodes along latitude
-nlon = 120;                                         % nlon = n nodes along longitude
+nlat = 180;                                         % nlat = m nodes along latitude
+nlon = 360;                                         % nlon = n nodes along longitude
 ntime = 12;                                         % ntime = t distinct time steps per forcing
 ngroup = 3;                                         % ngroup = g fish groups per forcing (facultativ)
 nensemble = 5;                                      % nensemble = e ensembles per forcing (facultativ)
 % mask
-mask_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat'; % Path of forcing dataset where is the mask
-mask_var = 'ACmodelMonthlyMeans.landmask';          % Name of mask variable in mask_path
-wet=1;                                              % Value for ocean cells in mask_var
-dry=NaN;                                            % Value for continent cells in mask_var
+mask_path = 'frc/geo_time.mat';                     % Path of forcing dataset where is the mask
+mask_var = 'geo_time.mask_land_2d';                 % Name of mask variable in mask_path
+wet=0;                                              % Value for ocean cells in mask_var
+dry=1;                                              % Value for continent cells in mask_var
 mask_dim = [nlat nlon 1 1 1];                       % Dimension of the mask forcing generated
 % coordinates lon/lat
-lon_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat';  % Path of forcing dataset where is the longitude
-lon_var = 'ACmodelMonthlyMeans.lonr';               % Name of longitude variable in lon_var
-lat_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat';  % Path of forcing dataset where is the latitude
-lat_var = 'ACmodelMonthlyMeans.latr';               % Name of latitude variable in lat_var
+lon_path = 'frc/geo_time.mat';                      % Path of forcing dataset where is the longitude
+lon_var = 'geo_time.lon';                           % Name of longitude variable in lon_var
+lat_path = 'frc/geo_time.mat';                      % Path of forcing dataset where is the latitude
+lat_var = 'geo_time.lat';                           % Name of latitude variable in lat_var
 lon_dim = [nlat nlon 1 1 1];                        % Dimension of the longitude array generated
 lat_dim = [nlat nlon 1 1 1];                        % Dimension of the latitude array generated
 % surface
-surf_path = 'input/BioForcing/ACM075_120_240_area.mat';    % Path of forcing dataset where is the surface
-surf_var = 'ACM075_120_240_area';                   % Name of surface variable in surf_path
-surf_unit = '[km^2]';                               % surf_var unit ([km^2] or [m^2] or ??)
+surf_path = 'frc/geo_time.mat';                     % Path of forcing dataset where is the surface
+surf_var = 'geo_time.surf';                         % Name of surface variable in surf_path
+surf_unit = '[m^2]';                                % surf_var unit ([km^2] or [m^2] or ??)
 surf_dim = [nlat nlon 1 1 1];                       % Dimension of the surface array generated
 
 % Ecological forcing paths and characteristics *****
 % depth
-depth_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat';% Path of forcing dataset where is the depth
-depth_var = 'ACmodelMonthlyMeans.bathy';            % Name of depth variable in depth_path
+depth_path = 'frc/data_monthly_orig.mat';           % Path of forcing dataset where is the depth
+depth_var = 'data_monthly.depth';                   % Name of depth variable in depth_path
 depth_type = 'value';                               % Type of depth definition (map or value)
 depth_unit = '[m]';                                 % depth_var unit ([m] or [km] or ??)
 ed=75;                                              % User defined depth of euphotic zone
 depth_dim = [nlat nlon 1 1 1];                      % Dimension of the depth array generated
 % npp
-npp_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat';  % Path of forcing dataset where is the primary production
-npp_var = 'ACmodelMonthlyMeans.ppC';                % Name of primary porduction variable in npp_path
-npp_unit = '[mgC m^-2 d^-1]';                       % npp_var unit ([mgC m^-2 d^-1] or ??)
+npp_path = 'frc/data_monthly_orig.mat';             % Path of forcing dataset where is the primary production
+npp_var = 'data_monthly.npp';                       % Name of primary porduction variable in npp_path
+npp_unit = '[mmolC m^-2 d^-1]';                     % npp_var unit ([mgC m^-2 d^-1] or ??)
 npp_dim = [nlat nlon ntime 1 1];                    % Dimension of the npp array generated
 % temperature
-temp_path = 'input/BioForcing/ROMS181v17MonthlyMeans.mat'; % Path of forcing dataset where is the temperature
-temp_var = 'ACmodelMonthlyMeans.bottomT';           % Name of temperature variable in temp_path         
+temp_path = 'frc/data_monthly_orig.mat';            % Path of forcing dataset where is the temperature
+temp_var = 'data_monthly.temp75';                   % Name of temperature variable in temp_path         
 temp_unit = '[degC]';                               % temp_var unit ([degC])
 temp_dim = [nlat nlon ntime 1 1];                   % Dimension of the temp array generated
 

@@ -8,17 +8,17 @@
 % MAIN TUNABLE PARAMETERS
 %**************************************************************************
 % Paths *******************************************
- boats.param.path.wrkdir = ['/Users/jguiet/OneDrive - University of California/BOATS/src/BOATS'];
- boats.param.path.outdir = ['/Users/jguiet/OneDrive - University of California/BOATS/src/BOATS'];
+ boats.param.path.wrkdir = ['/data/project3/jguiet/BOATS/BOATS/'];
+ boats.param.path.outdir = ['/data/project3/jguiet/BOATS/output/BOATSv2/'];
 % Names and Switches ******************************
  boats.param.main.sim_type     = 'nh';                                     % No Harvest 'nh' or Harvest simulations 'h'
- boats.param.main.sim_init     = 'restart';                                % Initialisation from 'PP' or else 'resstart'
- boats.param.main.sim_name     = 'Boats_V2';                              % Simulation name
- boats.param.main.model_version= 'V2';                                    % Model version
+ boats.param.main.sim_init     = 'PP';                                     % Initialisation from 'PP' or else 'resstart'
+ boats.param.main.sim_name     = 'Boats_V2';                               % Simulation name
+ boats.param.main.model_version= 'V2';                                     % Model version
  boats.param.main.save_restart = 1;                                        % Save restart: yes=1 ; no=0
  boats.param.main.save_output  = 1;                                        % Save output: yes=1 ; no=0
 % Simulation features *****************************
- boats.param.main.run_length   = 1;                                        % Simulation length in years 
+ boats.param.main.run_length   = 300;                                      % Simulation length in years 
  boats.param.main.dtt          = 30;                                       % days per timestep
  boats.param.main.nforcing     = 12;                                       % number of forcing to loop
  boats.param.main.param_ens    = 1;                                        % Use parameters ensembles: yes=1 ; no=0
