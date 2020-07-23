@@ -45,7 +45,7 @@ function [npp npp_ed] = arrange_npp(npp,npp_unit,depth,depth_unit,dim,ed,depth_t
     
     % Prepare depth mask
     if strcmp(depth_type,'map')
-        depth(find(depth>75))=ed;
+        depth(find(depth>ed))=ed;
         depth=repmat(depth,[1 1 dim(3)]);
     elseif strcmp(depth_type,'value')
         depth=ones(dim)*ed;

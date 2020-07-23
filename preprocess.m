@@ -12,6 +12,7 @@
 %   - surface [m^2] (surface of the computation cells for integration)
 %   - npp [mmolC m^-2 s^-1] (net primary production)
 %   - npp_ed [mmolC m^-3 d^-1] (net primary production averaged on euphotic zone depth)
+%   - pfb [mmolC m^-2 s^-1] (particule flux at bottom)
 %   - temperature [deg C] (water temperature)
 % Economical input 'Economical.mat' (for harvest simulations):
 %   - price [$ g^-1] (fish price history)
@@ -71,6 +72,13 @@ npp_path = 'frc/data_monthly_orig.mat';             % Path of forcing dataset wh
 npp_var = 'data_monthly.npp';                       % Name of primary porduction variable in npp_path
 npp_unit = '[mmolC m^-2 d^-1]';                     % npp_var unit ([mgC m^-2 d^-1] or ??)
 npp_dim = [nlat nlon ntime 1 1];                    % Dimension of the npp array generated
+% pfb
+b 	= -0.8;					    % Exponent for Martin's curve attenuation (typical value = -0.8)
+depth_path_high    = 'frc/ETOPO_depth.mat';         % Path of forcing dataset where is the depth at high resolution 
+depth_var_high 	   = 'ETOPO';                       % Name of depth variable in depth_path_high
+lon_depth_var_high = 'LON';			    % Longitude of depth variable in depth_path_high
+lat_depth_var_high = 'LAT';			    % Latitude of depth variable in depth_path_high
+depth_dim_high = [1800 3600 1 1 1];	            % Dimension of the high resolution depth array generated
 % temperature
 temp_path = 'frc/data_monthly_orig.mat';            % Path of forcing dataset where is the temperature
 temp_var = 'data_monthly.temp75';                   % Name of temperature variable in temp_path         
@@ -138,6 +146,18 @@ if create_ecology
     [npp npp_ed]=arrange_npp(npp,npp_unit,depth,depth_unit,npp_dim,ed,depth_type);
     % Create temperature *************************
     temperature=get_var(temp_path,temp_var,temp_dim);
+    % Create pfb *********************************
+    depth_high=get_var(depth_path_high,depth_var_high,depth_dim_high);
+    tmp = depth_high;
+    depth_high(:,1801:3600)=tmp(:,1:1800);
+    depth_high(:,1:1800)=tmp(:,1801:3600);
+    lon_high=get_var(depth_path_high,lon_depth_var_high,depth_dim_high);
+    lon_high =lon_high + 180;
+    lat_high=get_var(depth_path_high,lat_depth_var_high,depth_dim_high);
+    martin_att  = martin_attenuation(depth_high,ed,b);
+    martin_att_bin = bin_var(martin_att,lon_high,lat_high,lon,lat);
+    pep     = particle_export(npp,temperature,ed);
+    pfb		= pep.*npp.*repmat(martin_att_bin,[1,1,size(npp,3)]);
     % Plot forcings ******************************
     if plot_input
         % surface
@@ -147,6 +167,8 @@ if create_ecology
         plot_domain2D(npp_ed,lon,lat,mask,'npp_{ed} [mmolC m^{-3} d^{-1}]',4)
         % temperature
         plot_domain2D(temperature,lon,lat,mask,'temperature [deg C]',3)
+        % pfb
+        plot_domain2D(pfb,lon,lat,mask,'pfb [mmolC m^{-2} s^{-1}]',2)
     end
     % Save forcing
     Ecological.mask=mask;
@@ -155,6 +177,7 @@ if create_ecology
     Ecological.surface=surface;
     Ecological.npp=npp;
     Ecological.npp_ed=npp_ed;
+    Ecological.pfb=pfb;
     Ecological.temperature=temperature;
     save('Ecological.mat','Ecological','-v7.3')
 end
