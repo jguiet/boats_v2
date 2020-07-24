@@ -145,7 +145,7 @@ function boats = integrate(boats)
    catchability_used 	= nan(1,ntime);
    price_used         = nan(1,ntime);
    cost_effort_used 	 = nan(1,ntime);
-keyboard
+
    %-----------------------------------------------------------------------------------------
    % Effort initial condition
    effort(:,:,:)      =  boats.initial.effort;

@@ -1,3 +1,4 @@
+function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params)
 %**************************************************************************
 % BOATS MAIN
 % The BiOeconomic mArine Trophic Size-spectrum model computes the
@@ -23,8 +24,7 @@
 %**************************************************************************
  addpath('main')
  addpath('general')
- clear all
-
+ 
  
 %**************************************************************************
 % LOAD INPUT
@@ -36,8 +36,8 @@
 % PREPARE SIMULATION
 %**************************************************************************
 % Forcings datasets *******************************
- forcing_ecological='frc/Ecological.mat';
- forcing_economical='frc/Economical.mat';
+ forcing_ecological=Ecological_frc;
+ forcing_economical=Economical_frc;
 % Make output/restar dirs *************************
  if ~exist(boats.param.path.outdir)
     mkdir(boats.param.path.outdir)
@@ -48,7 +48,7 @@
 % IF ENSEMBLE PARAMETERS
 %**************************************************************************
  if boats.param.main.param_ens 
-    load(boats.param.main.dataset_ens);
+    load(Userdef_Params);
     param_loops=length(ens_index);
  else
     param_loops=1;
