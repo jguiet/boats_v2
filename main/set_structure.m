@@ -79,23 +79,23 @@ function structure = set_structure(boats,varargin)
  % Harvesting selectivity
  if (ECOL.pelagic)&&(ECOL.demersal)
      selectivity_P = nan(ECOL.nfish,ECOL.nfmass);
-     selectivity_P(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope);
-     selectivity_P(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope);
-     selectivity_P(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope);
+     selectivity_P(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope(1));
+     selectivity_P(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope(1));
+     selectivity_P(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope(1));
      selectivity_P_4d   = permute(repmat(selectivity_P,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
      selectivity_D = nan(ECOL.nfish,ECOL.nfmass);
-     selectivity_D(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope);
-     selectivity_D(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope);
-     selectivity_D(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope);
+     selectivity_D(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(2)*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope(2));
+     selectivity_D(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(2)*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope(2));
+     selectivity_D(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(2)*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope(2));
      selectivity_D_4d   = permute(repmat(selectivity_D,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
 
      structure.selectivity    = cat(1,selectivity_P,selectivity_D);
      structure.selectivity_4d = cat(3,selectivity_P_4d,selectivity_D_4d);
  else
      selectivity_P = nan(ECOL.nfish,ECOL.nfmass);
-     selectivity_P(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope);
-     selectivity_P(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope);
-     selectivity_P(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope);
+     selectivity_P(1,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_1*ECOL.malpha(1),ECON.sel_slope(1));
+     selectivity_P(2,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_2*ECOL.malpha(2),ECON.sel_slope(1));
+     selectivity_P(3,:) = sigmoid_And_length(structure.fmass,ECON.sel_pos_scale(1)*ECON.sel_pos_3*ECOL.malpha(3),ECON.sel_slope(1));
      selectivity_P_4d   = permute(repmat(selectivity_P,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
           
      structure.selectivity    = selectivity_P;
@@ -113,8 +113,8 @@ function structure = set_structure(boats,varargin)
      end
      rep_scale_P_4d           = permute(repmat(rep_scale_P,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
      rep_scale_D_4d           = permute(repmat(rep_scale_D,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
-     rep_alloc_frac_P         = rep_scale_P_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,1:3,:)./structure.minf_4d).^(ECOL.b_allo-1) - ECOL.eff_a);
-     rep_alloc_frac_D         = rep_scale_D_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,4:6,:)./structure.minf_4d).^(ECOL.b_allo-1) - ECOL.eff_a);
+     rep_alloc_frac_P         = rep_scale_P_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,1:3,:)./structure.minf_4d).^(ECOL.b_allo(1)-1) - ECOL.eff_a);
+     rep_alloc_frac_D         = rep_scale_D_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,4:6,:)./structure.minf_4d).^(ECOL.b_allo(2)-1) - ECOL.eff_a);
  
     structure.rep_alloc_frac = cat(3,rep_alloc_frac_P,rep_alloc_frac_D);
  else
@@ -123,7 +123,7 @@ function structure = set_structure(boats,varargin)
        rep_scale_P(indf,:)    = sigmoid_And_mass(structure.fmass,ECOL.rep_pos*ECOL.malpha(indf),ECOL.rep_slope);
      end
      rep_scale_P_4d           = permute(repmat(rep_scale_P,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
-     rep_alloc_frac_P         = rep_scale_P_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d./structure.minf_4d).^(ECOL.b_allo-1) - ECOL.eff_a);
+     rep_alloc_frac_P         = rep_scale_P_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d./structure.minf_4d).^(ECOL.b_allo(1)-1) - ECOL.eff_a);
  
     structure.rep_alloc_frac = rep_alloc_frac_P;
  end
@@ -132,22 +132,22 @@ function structure = set_structure(boats,varargin)
  % Arrays to simplify long calculations
  structure.delfm_4d_over_fmass_4d = structure.delfm_4d ./ structure.fmass_4d;
  if (ECOL.pelagic)&&(ECOL.demersal)
-     minf_4d_p_hplusbm1_P     = structure.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1);
-     fmass_4d_p_mh_P          = structure.fmass_4d(:,:,1:3,:).^(-ECOL.h_allo);
-     structure.minf_4d_p_bm1_P          = structure.minf_4d.^(ECOL.b_allo-1);
-     structure.fmass_4d_p_b_P           = structure.fmass_4d(:,:,1:3,:).^ECOL.b_allo;
-     minf_4d_p_hplusbm1_D     = structure.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1);
-     fmass_4d_p_mh_D          = structure.fmass_4d(:,:,4:6,:).^(-ECOL.h_allo);
-     structure.minf_4d_p_bm1_D          = structure.minf_4d.^(ECOL.b_allo-1);
-     structure.fmass_4d_p_b_D           = structure.fmass_4d(:,:,4:6,:).^ECOL.b_allo;
+     minf_4d_p_hplusbm1_P     = structure.minf_4d.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1);
+     fmass_4d_p_mh_P          = structure.fmass_4d(:,:,1:3,:).^(-ECOL.h_allo(1));
+     structure.minf_4d_p_bm1_P          = structure.minf_4d.^(ECOL.b_allo(1)-1);
+     structure.fmass_4d_p_b_P           = structure.fmass_4d(:,:,1:3,:).^ECOL.b_allo(1);
+     minf_4d_p_hplusbm1_D     = structure.minf_4d.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1);
+     fmass_4d_p_mh_D          = structure.fmass_4d(:,:,4:6,:).^(-ECOL.h_allo(2));
+     structure.minf_4d_p_bm1_D          = structure.minf_4d.^(ECOL.b_allo(2)-1);
+     structure.fmass_4d_p_b_D           = structure.fmass_4d(:,:,4:6,:).^ECOL.b_allo(2);
      
      structure.minf_4d_p_hplusbm1 = cat(3,minf_4d_p_hplusbm1_P,minf_4d_p_hplusbm1_D);
      structure.fmass_4d_p_mh      = cat(3,fmass_4d_p_mh_P,fmass_4d_p_mh_D);
  else
-     structure.minf_4d_p_hplusbm1       = structure.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1);
-     structure.fmass_4d_p_mh            = structure.fmass_4d.^(-ECOL.h_allo);
-     structure.minf_4d_p_bm1_P          = structure.minf_4d.^(ECOL.b_allo-1);
-     structure.fmass_4d_p_b_P           = structure.fmass_4d.^ECOL.b_allo;
+     structure.minf_4d_p_hplusbm1       = structure.minf_4d.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1);
+     structure.fmass_4d_p_mh            = structure.fmass_4d.^(-ECOL.h_allo(1));
+     structure.minf_4d_p_bm1_P          = structure.minf_4d.^(ECOL.b_allo(1)-1);
+     structure.fmass_4d_p_b_P           = structure.fmass_4d.^ECOL.b_allo(1);
  end
 
 %**************************************************************************************************************

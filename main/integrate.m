@@ -350,8 +350,8 @@ for indt = 1:ntime
   %-----------------------------------------------------------------------------------------------------------
   % Large fraction of phytoplankton and representative phytoplankton mass (Dunne)
   %-----------------------------------------------------------------------------------------------------------
-  s_over_p = ( -1.0 + ( 1.0 + 4.0 .* npp_ed ./ (exp(ENVI.kappa_eppley.*temp_phyto) .* ...
-    ENVI.Prod_star) ).^0.5) .* 0.5;
+  s_over_p = ( -1.0 + ( 1.0 + 4.0 .* npp_ed ./ (exp(ENVI.kappa_eppley(1).*temp_phyto) .* ...
+    ENVI.Prod_star(1)) ).^0.5) .* 0.5;
   frac_lg_du = s_over_p ./ (1.0 + s_over_p);                               % large fraction of PP as in Dunne et al. (2005)
   mphyto = (ENVI.mc_phy_l.^frac_lg_du) .* (ENVI.mc_phy_s.^(1.0 - frac_lg_du));
   
@@ -373,14 +373,14 @@ for indt = 1:ntime
   % Optimized code by using "bsxfun" instead of repmat
   if (ECOL.pelagic)&&(ECOL.demersal)
       en_input_P(:,:,1:3,:) = bsxfun(@times,npp./mphyto, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d(1:3,:).^(ECOL.tro_sca-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca-1)) .* ... 
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d(1:3,:).^(ECOL.tro_sca(1)-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca(1)-1)) .* ... 
                    STRU.fmass_4d(:,:,1:3,:) ./ squeeze(dfish(:,:,1:3,:) + CONV.epsln) * part_PP_g));
       en_input_P(:,:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d(4:6,:).^(ECOL.tro_sca-1),[3 4 1 2]),mbenthos.^(ECOL.tro_sca-1)) .* ... 
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d(4:6,:).^(ECOL.tro_sca(2)-1),[3 4 1 2]),mbenthos.^(ECOL.tro_sca(2)-1)) .* ... 
                    STRU.fmass_4d(:,:,4:6,:) ./ squeeze(dfish(:,:,4:6,:) + CONV.epsln) * part_PP_g));
   else
       en_input_P = bsxfun(@times,npp./mphyto, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d.^(ECOL.tro_sca-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca-1)) .* ... 
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d.^(ECOL.tro_sca(1)-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca(1)-1)) .* ... 
                    STRU.fmass_4d ./ squeeze(dfish + CONV.epsln) * part_PP_g));
   end
    
@@ -388,22 +388,22 @@ for indt = 1:ntime
   % Based on allometric scaling (von Bertalanffy)
   % calculate temperature dependencies, then growth rate, the activity loss constant (ka)  
   if (ECOL.pelagic)&&(ECOL.demersal)
-      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      A_P 	      = A0 .* temp_dep_A_P;
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(1)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_P 	      = A0(1) .* temp_dep_A_P;
       ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb(:,:,1:3,:) = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d(:,:,1:3,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
-      temp_dep_A_D  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_D  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      A_D 	      = A0 .* temp_dep_A_D;
+      temp_dep_A_D  = repmat(exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_D  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_D 	      = A0(2) .* temp_dep_A_D;
       ka_D 	      = A_D * ECOL.eff_a .* STRU.minf_4d_p_bm1_D;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb(:,:,4:6,:) = A_D .* STRU.fmass_4d_p_b_D - ka_D .* STRU.fmass_4d(:,:,4:6,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
       
       temp_dep_m = cat(3,temp_dep_m_P,temp_dep_m_D);
   else
-      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      A_P 	      = A0 .* temp_dep_A_P;
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_P 	      = A0(1) .* temp_dep_A_P;
       ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d;              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
       
@@ -436,10 +436,10 @@ for indt = 1:ntime
   % Boundary condition based on primary production
   % multiply by boundary condition partition function (part_PP_b)
   if (ECOL.pelagic)&&(ECOL.demersal)
-      flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
-      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
+      flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca(1)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(ECOL.tro_sca(2)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
   else
-      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca(1)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
   end
   %---------------------------------------------------------------------------------------
   % Flux in of number of eggs produced
@@ -457,9 +457,14 @@ for indt = 1:ntime
   % If the flux of number of eggs is less than 0.001 eggs m-2 y-1
   % then the flux due to the production and survival of eggs is zero
   mask_eggs_low = (flux_in_num_eggs < 0.001/CONV.spery);
-  flux_in_rep = (STRU.fmass_bc*ECOL.egg_surv) .* flux_in_num_eggs;
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      flux_in_rep(:,:,1:3) = (STRU.fmass_bc*ECOL.egg_surv(1)) .* flux_in_num_eggs(:,:,1:3);
+      flux_in_rep(:,:,4:6) = (STRU.fmass_bc*ECOL.egg_surv(2)) .* flux_in_num_eggs(:,:,4:6);
+  else
+      flux_in_rep = (STRU.fmass_bc*ECOL.egg_surv(1)) .* flux_in_num_eggs;
+  end
   flux_in_rep(mask_eggs_low) = 0;
-  
+ 
   %---------------------------------------------------------------------------------------
   % Boundary condition (Beverton-Holt form)
   flux_in(:,:,:,1) = flux_in_P .* ((flux_in_rep + CONV.epsln) ./ (flux_in_P + flux_in_rep + CONV.epsln));
@@ -480,8 +485,15 @@ for indt = 1:ntime
   % Calculate associated growth rate with mortality temperature dependence temp_dep_m
   % calculate mortality rate mortality0
   % mortality00 is the exp(zeta_1) term from the model description
-  A           = A0*temp_dep_m;
-  mortality0  = (exp(ECOL.zeta1)/3)*A;
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      A           = A0(1)*temp_dep_m(:,:,1:3,:);
+      mortality0(:,:,1:3,:)  = (exp(ECOL.zeta1(1))/3)*A;
+      A           = A0(2)*temp_dep_m(:,:,4:6,:);
+      mortality0(:,:,4:6,:)  = (exp(ECOL.zeta1(2))/3)*A;
+  else
+      A           = A0(1)*temp_dep_m;
+      mortality0  = (exp(ECOL.zeta1(1))/3)*A;
+  end
   
   %---------------------------------------------------------------------------------------  
   % Mortality rate 

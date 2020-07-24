@@ -34,35 +34,35 @@ function initial = initialize_domains(boats)
 
      %---------------------------------
      % Calculate quantities required for dfish 
-     s_over_p   = ( -1.0 + ( 1.0 + 4.0 .* npp_ed ./ (exp(ENVI.kappa_eppley.*temp_phyto) .* ...
-                    ENVI.Prod_star) ).^0.5) .* 0.5;
+     s_over_p   = ( -1.0 + ( 1.0 + 4.0 .* npp_ed ./ (exp(ENVI.kappa_eppley(1).*temp_phyto) .* ...
+                    ENVI.Prod_star(1)) ).^0.5) .* 0.5;
      frac_lg_du = s_over_p ./ (1.0 + s_over_p);                            % large fraction of PP as in Dunne et al. (2005)
      mphyto     = (ENVI.mc_phy_l.^frac_lg_du) .* (ENVI.mc_phy_s.^(1.0 - frac_lg_du));
   
      mbentho    = mphyto; %JG ATTT!   
      
      if (ECOL.pelagic)&&(ECOL.demersal)
-         temp_dep_A_P = exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
-         A_P          = (ECOL.A00/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
-         mortality0_P = (exp(ECOL.zeta1)/3)*A_P;
-         temp_dep_A_D = exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
-         A_D          = (ECOL.A00/CONV.spery)*temp_dep_A_D;                        % growth rate of Andersen and Beyer (2013, p. 18)
-         mortality0_D = (exp(ECOL.zeta1)/3)*A_D;
+         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         A_P          = (ECOL.A00(1)/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
+         mortality0_P = (exp(ECOL.zeta1(1))/3)*A_P;
+         temp_dep_A_D = exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         A_D          = (ECOL.A00(2)/CONV.spery)*temp_dep_A_D;                        % growth rate of Andersen and Beyer (2013, p. 18)
+         mortality0_D = (exp(ECOL.zeta1(2))/3)*A_D;
      else
-         temp_dep_A_P = exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
-         A_P          = (ECOL.A00/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
-         mortality0_P = (exp(ECOL.zeta1)/3)*A_P;
+         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         A_P          = (ECOL.A00(1)/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
+         mortality0_P = (exp(ECOL.zeta1(1))/3)*A_P;
      end
 
      %---------------------------------
      % Calculate initial dfish
      if (ECOL.pelagic)&&(ECOL.demersal)
-         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca) .* repmat(npp,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1)) .* STRU.fmass_4d(:,:,1:3,:).^(ECOL.tro_sca + ECOL.h_allo - 1);
-         dfish_D      = (1/ECOL.nfish) * (1 - ECOL.tro_sca) .* repmat(pfb,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_D,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(ECOL.tro_sca),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1)) .* STRU.fmass_4d(:,:,4:6,:).^(ECOL.tro_sca + ECOL.h_allo - 1);         
+         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(1)) .* repmat(npp,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca(1)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d(:,:,1:3,:).^(ECOL.tro_sca(1) + ECOL.h_allo(1) - 1);
+         dfish_D      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(2)) .* repmat(pfb,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_D,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(ECOL.tro_sca(2)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d(:,:,4:6,:).^(ECOL.tro_sca(2) + ECOL.h_allo(2) - 1);         
 
          %---------------------------------
          % Make non existent cells NaNs
@@ -70,9 +70,9 @@ function initial = initialize_domains(boats)
          dfish_D(STRU.mask_notexist_4d) = NaN;
          initial.dfish = cat(3,dfish_P,dfish_D);
      else
-         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca) .* repmat(npp,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d.^(ECOL.h_allo + ECOL.b_allo - 1)) .* STRU.fmass_4d.^(ECOL.tro_sca + ECOL.h_allo - 1);      
+         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(1)) .* repmat(npp,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca(1)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d.^(ECOL.tro_sca(1) + ECOL.h_allo(1) - 1);      
 
          %---------------------------------
          % Make non existent cells NaNs
