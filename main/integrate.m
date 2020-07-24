@@ -81,18 +81,33 @@ function boats = integrate(boats)
 
  %-----------------------------------------------------------------------------------------
  % Initialize biological arrays
- en_input_P             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- en_input_vb        	   = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- en_input               = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- gamma                  = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- flux_in                = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- flux_out               = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- flux_fish_growth       = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
- flux_in_rep            = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
- flux_in_P              = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
- flux_in_num_eggs       = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
- ena_regime             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass); 
- mortality              = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+ if (ECOL.pelagic)&&(ECOL.demersal)
+     en_input_P             = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     en_input_vb        	= nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     en_input               = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     gamma                  = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     flux_in                = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     flux_out               = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     flux_fish_growth       = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+     flux_in_rep            = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+     flux_in_P              = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+     flux_in_num_eggs       = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+     ena_regime             = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass); 
+     mortality              = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+ else
+     en_input_P             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     en_input_vb        	= nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     en_input               = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     gamma                  = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     flux_in                = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     flux_out               = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     flux_fish_growth       = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+     flux_in_rep            = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+     flux_in_P              = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+     flux_in_num_eggs       = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+     ena_regime             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass); 
+     mortality              = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+ end
 
  %-----------------------------------------------------------------------------------------
  % Biomass initial condition
@@ -109,19 +124,28 @@ function boats = integrate(boats)
 
    %-----------------------------------------------------------------------------------------
    % Initialize economics arrays
-   dharvest             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
-   dfish_temp           = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
-   effort               = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
-   effort_change        = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
-   cost                 = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
-   revenue              = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+   if (ECOL.pelagic)&&(ECOL.demersal)
+       dharvest             = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+       dfish_temp           = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish,ECOL.nfmass);
+       effort               = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+       effort_change        = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+       cost                 = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+       revenue              = nan(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+   else
+       dharvest             = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+       dfish_temp           = nan(FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+       effort               = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+       effort_change        = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+       cost                 = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+       revenue              = nan(FORC.nlat,FORC.nlon,ECOL.nfish);
+   end
   
    %-----------------------------------------------------------------------------------------
    % Initialize some additional output array
    catchability_used 	= nan(1,ntime);
    price_used         = nan(1,ntime);
    cost_effort_used 	 = nan(1,ntime);
-
+keyboard
    %-----------------------------------------------------------------------------------------
    % Effort initial condition
    effort(:,:,:)      =  boats.initial.effort;
@@ -231,6 +255,13 @@ function boats = integrate(boats)
  % This require hardwiring the dimensions of output arrays based on the
  % variable original size/type (4D,3D, etc) and processing (2di, si, gi)
  disp(['Initializing output...']);
+ 
+ if (ECOL.pelagic)&&(ECOL.demersal)
+     nfish = 2*ECOL.nfish;
+ else
+     nfish = ECOL.nfish;
+ end
+ 
  for indm=1:outmode.noutm
     ontime = outmode.(outmode.modes{indm}).ntime;
     for indv=1:outmode.(outmode.modes{indm}).nvar
@@ -242,19 +273,19 @@ function boats = integrate(boats)
           case 'none'
           % Saves the entire variable without any processing
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,FORC.nlat,FORC.nlon,ECOL.nfish,ECOL.nfmass);
+                                           zeros(ontime,FORC.nlat,FORC.nlon,nfish,ECOL.nfmass);
           case 'si'
           % Saves the variable after integral over size dimensions
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,FORC.nlat,FORC.nlon,ECOL.nfish);
+                                           zeros(ontime,FORC.nlat,FORC.nlon,nfish);
           case '2di_si'
           % Saves the variable after integral over size dimensions and over 2D domain
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,ECOL.nfish);
+                                           zeros(ontime,nfish);
           case 'LMEi_si'
           % Saves the variable after integral over size dimensions and over 2D domain only across LME
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,ECOL.nfish);
+                                           zeros(ontime,nfish);
           case '2di_si_gi'
           % Saves the variable summed over the fish groups after integral over size dimensions and over 2D
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
@@ -268,15 +299,15 @@ function boats = integrate(boats)
           case 'none'
           % Saves the entire variable without any processing
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,FORC.nlat,FORC.nlon,ECOL.nfish);
+                                           zeros(ontime,FORC.nlat,FORC.nlon,nfish);
           case '2di'
           % Saves the variable after integral over 2D domain
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,ECOL.nfish);
+                                           zeros(ontime,nfish);
           case 'LMEi'
           % Saves the variable after integral over 2D domain only across LME
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
-                                           zeros(ontime,ECOL.nfish);
+                                           zeros(ontime,nfish);
           case '2di_gi'
           % Saves the variable summed over groups after integral over 2D domain 
              outmode.(outmode.modes{indm}).(outmode.(outmode.modes{indm}).var_outn{indv}) = ...
@@ -306,11 +337,12 @@ for indt = 1:ntime
   if local_month==0;local_month=MAIN.nforcing;end
   disp(['indt : ' num2str(indt) ' / ' num2str(ntime) ' - local month : ' num2str(local_month)]);
 
-  %---------------------------------------------------------------------------------------
-  % Physical and ecological forcings (NPP in mmolC m-2 s-1)
-  %---------------------------------------------------------------------------------------
+  %--------------------------------------------------------------------------------------------------
+  % Physical and ecological forcings (NPP / PFB, in mmolC m-2 s-1, NPP_ED in mmolC m-2 d-1, T in C/K)
+  %--------------------------------------------------------------------------------------------------
   npp         = squeeze(FORC.npp(:,:,local_month));
   npp_ed      = squeeze(FORC.npp_ed(:,:,local_month));
+  pfb         = squeeze(FORC.pfb(:,:,local_month));
   temp_phyto  = squeeze(FORC.temperature(:,:,local_month));
   temp_fish_A = squeeze(FORC.temperature_K(:,:,local_month));
   temp_fish_m = temp_fish_A;  
@@ -324,6 +356,11 @@ for indt = 1:ntime
   mphyto = (ENVI.mc_phy_l.^frac_lg_du) .* (ENVI.mc_phy_s.^(1.0 - frac_lg_du));
   
   %-----------------------------------------------------------------------------------------------------------
+  % Representative benthis mass
+  %-----------------------------------------------------------------------------------------------------------
+  mbenthos = mphyto; %JG ATT !!!
+
+  %-----------------------------------------------------------------------------------------------------------
   % Growth rate
   %-----------------------------------------------------------------------------------------------------------
   % growth rate = production distribution * mass / biomass distribution
@@ -334,18 +371,44 @@ for indt = 1:ntime
 %              ((fmass_4d ./ repmat(mphyto,[1 1 nfish nfmass])).^(tro_sca-1)) .* ...
 %              fmass_4d ./ squeeze(dfish + epsln) * part_PP_g;
   % Optimized code by using "bsxfun" instead of repmat
-  en_input_P = bsxfun(@times,npp./mphyto, ...
-               (bsxfun(@rdivide,permute(STRU.fmass_2d.^(ECOL.tro_sca-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca-1)) .* ... 
-               STRU.fmass_4d ./ squeeze(dfish + CONV.epsln) * part_PP_g));
-
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      en_input_P(:,:,1:3,:) = bsxfun(@times,npp./mphyto, ...
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d(1:3,:).^(ECOL.tro_sca-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca-1)) .* ... 
+                   STRU.fmass_4d(:,:,1:3,:) ./ squeeze(dfish(:,:,1:3,:) + CONV.epsln) * part_PP_g));
+      en_input_P(:,:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d(4:6,:).^(ECOL.tro_sca-1),[3 4 1 2]),mbenthos.^(ECOL.tro_sca-1)) .* ... 
+                   STRU.fmass_4d(:,:,4:6,:) ./ squeeze(dfish(:,:,4:6,:) + CONV.epsln) * part_PP_g));
+  else
+      en_input_P = bsxfun(@times,npp./mphyto, ...
+                   (bsxfun(@rdivide,permute(STRU.fmass_2d.^(ECOL.tro_sca-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca-1)) .* ... 
+                   STRU.fmass_4d ./ squeeze(dfish + CONV.epsln) * part_PP_g));
+  end
+   
   %---------------------------------------------------------------------------------------
   % Based on allometric scaling (von Bertalanffy)
   % calculate temperature dependencies, then growth rate, the activity loss constant (ka)  
-  temp_dep_A  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-  temp_dep_m  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-  A 	      = A0 .* temp_dep_A;
-  ka 	      = A * ECOL.eff_a .* STRU.minf_4d_p_bm1;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
-  en_input_vb = A .* STRU.fmass_4d_p_b - ka .* STRU.fmass_4d;              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_P 	      = A0 .* temp_dep_A_P;
+      ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
+      en_input_vb(:,:,1:3,:) = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d(:,:,1:3,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
+      temp_dep_A_D  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_D  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_D 	      = A0 .* temp_dep_A_D;
+      ka_D 	      = A_D * ECOL.eff_a .* STRU.minf_4d_p_bm1_D;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
+      en_input_vb(:,:,4:6,:) = A_D .* STRU.fmass_4d_p_b_D - ka_D .* STRU.fmass_4d(:,:,4:6,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
+      
+      temp_dep_m = cat(3,temp_dep_m_P,temp_dep_m_D);
+  else
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      A_P 	      = A0 .* temp_dep_A_P;
+      ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
+      en_input_vb = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d;              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
+      
+      temp_dep_m = temp_dep_m_p;
+  end
   
   %---------------------------------------------------------------------------------------
   % Input energy (energy available to growth and reproduction)
@@ -372,13 +435,23 @@ for indt = 1:ntime
   %---------------------------------------------------------------------------------------    
   % Boundary condition based on primary production
   % multiply by boundary condition partition function (part_PP_b)
-  flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
-
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
+  else
+      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+  end
   %---------------------------------------------------------------------------------------
   % Flux in of number of eggs produced
-  flux_in_num_eggs = (ECOL.frac_fem/ECOL.m_egg) .* ...
-    nansum( STRU.rep_alloc_frac .* en_input .* squeeze(dfish) .* STRU.delfm_4d_over_fmass_4d,4) / STRU.delfm_4d(1,1,1,1);
-  
+  if (ECOL.pelagic)&&(ECOL.demersal)
+      flux_in_num_eggs(:,:,1:3) = (ECOL.frac_fem/ECOL.m_egg) .* ...
+        nansum( STRU.rep_alloc_frac(:,:,1:3,:) .* en_input(:,:,1:3,:) .* squeeze(dfish(:,:,1:3,:)) .* STRU.delfm_4d_over_fmass_4d(:,:,1:3,:),4) / STRU.delfm_4d(1,1,1,1);
+      flux_in_num_eggs(:,:,4:6) = (ECOL.frac_fem/ECOL.m_egg) .* ...
+        nansum( STRU.rep_alloc_frac(:,:,4:6,:) .* en_input(:,:,4:6,:) .* squeeze(dfish(:,:,4:6,:)) .* STRU.delfm_4d_over_fmass_4d(:,:,4:6,:),4) / STRU.delfm_4d(1,1,4,1);
+  else
+      flux_in_num_eggs = (ECOL.frac_fem/ECOL.m_egg) .* ...
+        nansum( STRU.rep_alloc_frac .* en_input .* squeeze(dfish) .* STRU.delfm_4d_over_fmass_4d,4) / STRU.delfm_4d(1,1,1,1);
+  end
   %---------------------------------------------------------------------------------------
   % Boundary condition based on recruitment (production and survival of eggs)
   % If the flux of number of eggs is less than 0.001 eggs m-2 y-1
@@ -442,11 +515,19 @@ for indt = 1:ntime
     %-------------------------------------------------------------------------------------   
     if (time(indt) < ECON.harvest_start*CONV.spery)                        
         % Catchability zero before start year (adjusted for dharvest calculation)
-        qcatch = 0 * ones(1,ECOL.nfish);
+        if (ECOL.pelagic)&&(ECOL.demersal)
+    	    qcatch = 0 * ones(1,2*ECOL.nfish);
+	else
+            qcatch = 0 * ones(1,ECOL.nfish);
+	end
     else  
         % Set catchability forcing scenario (adjusted for dharvest calculation)     
         catchability_used(1,indt) = FORC.catchability(indt);
-        qcatch = FORC.catchability(indt) * ones(1,ECOL.nfish);
+        if (ECOL.pelagic)&&(ECOL.demersal)
+            qcatch = FORC.catchability(indt) * ones(1,2*ECOL.nfish);
+        else
+            qcatch = FORC.catchability(indt) * ones(1,ECOL.nfish);
+        end
     end
     
     %-------------------------------------------------------------------------------------
@@ -472,7 +553,11 @@ for indt = 1:ntime
     %----------------------------------------------------------------------------------
     % Set price forcing scenario (adjusted for dharvest calculation)
     price_used(1,indt) = FORC.price(indt);
-    price       = FORC.price(indt) * ones(ECOL.nfish,ECOL.nfmass);
+    if (ECOL.pelagic)&&(ECOL.demersal)
+        price       = FORC.price(indt) * ones(2*ECOL.nfish,ECOL.nfmass);
+    else
+        price       = FORC.price(indt) * ones(ECOL.nfish,ECOL.nfmass);
+    end
     
     %-------------------------------------------------------------------------------------
     % Cost per unit effort forcing
@@ -480,7 +565,11 @@ for indt = 1:ntime
     %-------------------------------------------------------------------------------------
     % Set cost forcing scenario (adjusted for dharvest calculation)
     cost_effort_used(1,indt) = FORC.cost(indt);
-    cost_effort = FORC.cost(indt) * ones(1,ECOL.nfish);
+    if (ECOL.pelagic)&&(ECOL.demersal)
+        cost_effort = FORC.cost(indt) * ones(1,2*ECOL.nfish);
+    else
+        cost_effort = FORC.cost(indt) * ones(1,ECOL.nfish);
+    end
 
     %-------------------------------------------------------------------------------------
     % revenue [nlat,nlon,nfish]
@@ -559,8 +648,8 @@ for indt = 1:ntime
              case '2di_si'
              % Saves the variable after integral over size dimensions and over 2D domain
                 tmpvar1 = squeeze(nansum(tmpvar .* STRU.delfm_4d,4)) * CONV.mmolC_2_wetB;
-                tmpvar2 = nan([1 3]);
-                for indgg=1:3
+                tmpvar2 = nan([1 size(tmpvar1,3)]);
+                for indgg=1:size(tmpvar1,3)
                    tmpvar2(1,indgg) = integrate_2d(squeeze(tmpvar1(:,:,indgg)),boats.forcing.surf);
                 end
                 outmode.(outmode.modes{indm}).(tvar_outn{indv})(iit,:)  = ...
@@ -602,8 +691,8 @@ for indt = 1:ntime
                                               STRU.mask_land_g_nan;
              case '2di'
              % Saves the variable after integral over 2D domain
-                tmpvar1 = nan([1 3]);
-                for indgg=1:3
+                tmpvar1 = nan([1 size(tmpvar1,3)]);
+                for indgg=1:size(tmpvar1,3)
                    tmpvar1(1,indgg) = integrate_2d(squeeze(tmpvar(:,:,indgg)),boats.forcing.surf);
                 end
                 outmode.(outmode.modes{indm}).(tvar_outn{indv})(iit,:)  = ...

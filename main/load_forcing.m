@@ -21,6 +21,8 @@ forcing.npp=Ecological.npp;
 forcing.npp(find(forcing.mask==1))=NaN;
 forcing.npp_ed=Ecological.npp_ed;
 forcing.npp_ed(find(forcing.mask==1))=NaN;
+forcing.pfb=Ecological.pfb;
+forcing.pfb(find(forcing.mask==1))=NaN;
 forcing.temperature=Ecological.temperature;
 forcing.temperature_K=Ecological.temperature+boats.param.conversion.C_2_K;
 forcing.surf=Ecological.surface;
