@@ -5,10 +5,9 @@
 % removing land, high latitude, and open-ocean sites (not in an LME)
 %-----------------------------------------------------------------------------------------
 
-function [y1] = function_vec_2_map(vec_original,indlat,indlon)
+function [y1] = function_vec_2_map(vec_original,indlat,indlon,mask)
 
- load /archive/dcarozza/DATA/mask_notlme_high_nan.mat
- array_new = nan(size(mask_notlme_high_nan));
+ array_new = nan(size(mask));
 
  for ind = 1:length(indlat)
 
