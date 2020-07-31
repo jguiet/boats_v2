@@ -29,8 +29,9 @@ function initial = initialize_domains(boats)
      npp          = squeeze(nanmean(FORC.npp,3));                          % mmolC m-2 s-1
      npp_ed       = squeeze(nanmean(FORC.npp_ed,3));                       % mmolC m-3 d-1
      pfb          = squeeze(nanmean(FORC.pfb,3));                          % mmolC m-2 s-1
-     temp_phyto   = squeeze(nanmean(FORC.temperature,3));                  % degC
-     temp_fish    = squeeze(nanmean(FORC.temperature_K,3));                % degK
+     temp_phyto   = squeeze(nanmean(FORC.temperature_pel,3));                  % degC
+     temp_fish_pel    = squeeze(nanmean(FORC.temperature_pel_K,3));                % degK
+     temp_fish_dem    = squeeze(nanmean(FORC.temperature_dem_K,3));                % degK
 
      %---------------------------------
      % Calculate quantities required for dfish 
@@ -42,14 +43,14 @@ function initial = initialize_domains(boats)
      mbentho    = ENVI.mc_benthic;  
      
      if (ECOL.pelagic)&&(ECOL.demersal)
-         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel - 1./ENVI.temp_ref_A));
          A_P          = (ECOL.A00(1)/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
          mortality0_P = (exp(ECOL.zeta1(1))/3)*A_P;
-         temp_dep_A_D = exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         temp_dep_A_D = exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish_dem - 1./ENVI.temp_ref_A));
          A_D          = (ECOL.A00(2)/CONV.spery)*temp_dep_A_D;                        % growth rate of Andersen and Beyer (2013, p. 18)
          mortality0_D = (exp(ECOL.zeta1(2))/3)*A_D;
      else
-         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish - 1./ENVI.temp_ref_A));
+         temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel - 1./ENVI.temp_ref_A));
          A_P          = (ECOL.A00(1)/CONV.spery)*temp_dep_A_P;                        % growth rate of Andersen and Beyer (2013, p. 18)
          mortality0_P = (exp(ECOL.zeta1(1))/3)*A_P;
      end

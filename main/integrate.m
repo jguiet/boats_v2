@@ -343,9 +343,11 @@ for indt = 1:ntime
   npp         = squeeze(FORC.npp(:,:,local_month));
   npp_ed      = squeeze(FORC.npp_ed(:,:,local_month));
   pfb         = squeeze(FORC.pfb(:,:,local_month));
-  temp_phyto  = squeeze(FORC.temperature(:,:,local_month));
-  temp_fish_A = squeeze(FORC.temperature_K(:,:,local_month));
-  temp_fish_m = temp_fish_A;  
+  temp_phyto  = squeeze(FORC.temperature_pel(:,:,local_month));
+  temp_fish_pel_A = squeeze(FORC.temperature_pel_K(:,:,local_month));
+  temp_fish_pel_m = temp_fish_pel_A;  
+  temp_fish_dem_A = squeeze(FORC.temperature_dem_K(:,:,local_month));
+  temp_fish_dem_m = temp_fish_dem_A;
 
   %-----------------------------------------------------------------------------------------------------------
   % Large fraction of phytoplankton and representative phytoplankton mass (Dunne)
@@ -388,21 +390,21 @@ for indt = 1:ntime
   % Based on allometric scaling (von Bertalanffy)
   % calculate temperature dependencies, then growth rate, the activity loss constant (ka)  
   if (ECOL.pelagic)&&(ECOL.demersal)
-      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(1)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
       A_P 	      = A0(1) .* temp_dep_A_P;
       ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb(:,:,1:3,:) = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d(:,:,1:3,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
-      temp_dep_A_D  = repmat(exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_D  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_A_D  = repmat(exp( (-ENVI.E_activation_A(2)/ENVI.k_Boltzmann) .* (1./temp_fish_dem_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_D  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_dem_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
       A_D 	      = A0(2) .* temp_dep_A_D;
       ka_D 	      = A_D * ECOL.eff_a .* STRU.minf_4d_p_bm1_D;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb(:,:,4:6,:) = A_D .* STRU.fmass_4d_p_b_D - ka_D .* STRU.fmass_4d(:,:,4:6,:);              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
       
       temp_dep_m = cat(3,temp_dep_m_P,temp_dep_m_D);
   else
-      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_A - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_m - 1/ENVI.temp_ref_A)),[1 1 ECOL.nfish ECOL.nfmass]);
       A_P 	      = A0(1) .* temp_dep_A_P;
       ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb = A_P .* STRU.fmass_4d_p_b_P - ka_P .* STRU.fmass_4d;              % A .* fmass_4d.^b_allo - ka .* fmass_4d;

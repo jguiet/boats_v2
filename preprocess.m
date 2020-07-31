@@ -13,7 +13,7 @@
 %   - npp [mmolC m^-2 s^-1] (net primary production)
 %   - npp_ed [mmolC m^-3 d^-1] (net primary production averaged on euphotic zone depth)
 %   - pfb [mmolC m^-2 s^-1] (particule flux at bottom)
-%   - temperature [deg C] (water temperature)
+%   - temperature pelagic / demersal [deg C] (water temperature)
 % Economical input 'Economical.mat' (for harvest simulations):
 %   - price [$ g^-1] (fish price history)
 %   - cost [$ W^-1] (exploitation cost history)
@@ -79,11 +79,16 @@ depth_var_high 	   = 'ETOPO';                       % Name of depth variable in 
 lon_depth_var_high = 'LON';			    % Longitude of depth variable in depth_path_high
 lat_depth_var_high = 'LAT';			    % Latitude of depth variable in depth_path_high
 depth_dim_high = [1800 3600 1 1 1];	            % Dimension of the high resolution depth array generated
-% temperature
-temp_path = 'frc/data_monthly_orig.mat';            % Path of forcing dataset where is the temperature
-temp_var = 'data_monthly.temp75';                   % Name of temperature variable in temp_path         
-temp_unit = '[degC]';                               % temp_var unit ([degC])
-temp_dim = [nlat nlon ntime 1 1];                   % Dimension of the temp array generated
+% temperature pelagic
+temp_path_pel = 'frc/data_monthly_orig.mat';        % Path of forcing dataset where is the pelagic temperature
+temp_var_pel = 'data_monthly.temp75';               % Name of temperature variable in temp_path         
+temp_unit_pel = '[degC]';                           % temp_var unit ([degC])
+temp_dim_pel = [nlat nlon ntime 1 1];               % Dimension of the temp array generated
+% temperature demersal
+temp_path_dem = 'bot_temp.mat';                     % Path of forcing dataset where is the demersal temperature
+temp_var_dem = 'bot_temp_c';                          % Name of temperature variable in temp_path
+temp_unit_dem = '[degC]';                           % temp_var unit ([degC])
+temp_dim_dem = [nlat nlon ntime 1 1];               % Dimension of the temp array generatede
 
 % Economical forcing paths and characteristics *****
 % price
@@ -145,7 +150,9 @@ if create_ecology
     depth=get_var(depth_path,depth_var,depth_dim);
     [npp npp_ed]=arrange_npp(npp,npp_unit,depth,depth_unit,npp_dim,ed,depth_type);
     % Create temperature *************************
-    temperature=get_var(temp_path,temp_var,temp_dim);
+    temperature_pel=get_var(temp_path_pel,temp_var_pel,temp_dim_pel);
+    temperature_dem=get_var(temp_path_dem,temp_var_dem,temp_dim_dem);
+    temperature_dem=correctdem(temperature_pel,temperature_dem,data_monthly.etopo,ed);
     % Create pfb *********************************
     depth_high=get_var(depth_path_high,depth_var_high,depth_dim_high);
     tmp = depth_high;
@@ -156,7 +163,7 @@ if create_ecology
     lat_high=get_var(depth_path_high,lat_depth_var_high,depth_dim_high);
     martin_att  = martin_attenuation(depth_high,ed,b);
     martin_att_bin = bin_var(martin_att,lon_high,lat_high,lon,lat);
-    pep     = particle_export(npp,temperature,ed);
+    pep     = particle_export(npp,temperature_pel,ed);
     pfb		= pep.*npp.*repmat(martin_att_bin,[1,1,size(npp,3)]);
     % Plot forcings ******************************
     if plot_input
@@ -166,7 +173,8 @@ if create_ecology
         plot_domain2D(npp,lon,lat,mask,'npp [mmolC m^{-2} s^{-1}]',2)
         plot_domain2D(npp_ed,lon,lat,mask,'npp_{ed} [mmolC m^{-3} d^{-1}]',4)
         % temperature
-        plot_domain2D(temperature,lon,lat,mask,'temperature [deg C]',3)
+        plot_domain2D(temperature_pel,lon,lat,mask,'temperature pelagic [deg C]',3)
+        plot_domain2D(temperature_dem,lon,lat,mask,'temperature demersal [deg C]',3)
         % pfb
         plot_domain2D(pfb,lon,lat,mask,'pfb [mmolC m^{-2} s^{-1}]',2)
     end
@@ -178,7 +186,8 @@ if create_ecology
     Ecological.npp=npp;
     Ecological.npp_ed=npp_ed;
     Ecological.pfb=pfb;
-    Ecological.temperature=temperature;
+    Ecological.temperature_pel=temperature_pel;
+    Ecological.temperature_dem=temperature_dem;
     save('Ecological.mat','Ecological','-v7.3')
 end
 
