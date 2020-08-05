@@ -1,5 +1,8 @@
  function boats = save_restart(boats)
 
+ % Save tro_sca matrix
+ restart.tro_sca = squeeze(boats.initial.tro_sca);
+
  % Saves the required restart
  filename = boats.param.main.sname_rest;
  restart.dfish 	= squeeze(boats.dfish);

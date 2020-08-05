@@ -130,6 +130,10 @@ function initial = initialize_domains(boats)
        % Load restart file
        tmp = load([path_lname_rest '.mat']);
        restart = tmp.restart;
+
+       %---------------------------------
+       % Trophic scaling
+       initial.tro_sca=restart.tro_sca;
        
        %---------------------------------
        % Use dfish from restart
