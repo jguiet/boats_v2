@@ -56,14 +56,30 @@ function initial = initialize_domains(boats)
      end
 
      %---------------------------------
+     % Map of trophic scaling ---------
+     if (ECOL.pelagic)&&(ECOL.demersal)
+         initial.tro_sca = ones(FORC.nvec,2);
+         % Iron limited trophic scaling for Pelagic fish
+         te_no3 = ECOL.te(1) * (1 - (FORC.no3min_vec ./ (ECOL.kfe + FORC.no3min_vec) ) );
+         initial.tro_sca(:,1) = log10(te_no3) ./ log10(ECOL.ppmr(1)); 
+         % Normal trophic scaling for Demersal fish
+         initial.tro_sca(:,2) = initial.tro_sca(:,2)*ECOL.tro_sca(2);
+     else
+         initial.tro_sca = ones(FORC.nvec,1);
+         % Iron limited trophic scaling for Pelagic fish
+         te_no3 = ECOL.te(1) * (1 - (FORC.no3min_vec ./ (ECOL.kfe + FORC.no3min_vec) ) );
+         initial.tro_sca(:,1) = log10(te_no3) ./ log10(ECOL.ppmr(1));
+     end
+
+     %---------------------------------
      % Calculate initial dfish
      if (ECOL.pelagic)&&(ECOL.demersal)
-         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(1)) .* repmat(npp,[1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_P,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca(1)),[1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d_vec.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d_vec(:,1:3,:).^(ECOL.tro_sca(1) + ECOL.h_allo(1) - 1);
-         dfish_D      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(2)) .* repmat(pfb,[1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_D,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(ECOL.tro_sca(2)),[1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d_vec.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d_vec(:,4:6,:).^(ECOL.tro_sca(2) + ECOL.h_allo(2) - 1);         
+         dfish_P      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])) .* repmat(npp,[1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_P,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(initial.tro_sca(:,1)),[1 ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d_vec.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d_vec(:,1:3,:).^(repmat(initial.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(1) - 1);
+         dfish_D      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass])) .* repmat(pfb,[1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_D,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(initial.tro_sca(1,2)),[size(pfb,1) ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d_vec.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d_vec(:,4:6,:).^(repmat(initial.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(2) - 1);         
 
          %---------------------------------
          % Make non existent cells NaNs
@@ -71,9 +87,9 @@ function initial = initialize_domains(boats)
          dfish_D(STRU.mask_notexist_4d_vec) = NaN;
          initial.dfish = cat(2,dfish_P,dfish_D);
      else
-         dfish_P      = (1/ECOL.nfish) * (1 - ECOL.tro_sca(1)) .* repmat(npp,[1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_P,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca(1)),[1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d_vec.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d_vec.^(ECOL.tro_sca(1) + ECOL.h_allo(1) - 1);      
+         dfish_P      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])) .* repmat(npp,[1 ECOL.nfish ECOL.nfmass]) ./ ...
+         ( repmat(mortality0_P,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(initial.tro_sca(:,1)),[1 ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d_vec.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d_vec.^(repmat(initial.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(1) - 1);      
 
          %---------------------------------
          % Make non existent cells NaNs

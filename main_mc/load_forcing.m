@@ -23,6 +23,7 @@ forcing.npp_ed=Ecological.npp_ed;
 forcing.npp_ed(find(forcing.mask==1))=NaN;
 forcing.pfb=Ecological.pfb;
 forcing.pfb(find(forcing.mask==1))=NaN;
+forcing.no3min=Ecological.no3min;
 forcing.temperature_pel=Ecological.temperature_pel;
 forcing.temperature_pel_K=Ecological.temperature_pel+boats.param.conversion.C_2_K;
 forcing.temperature_dem=Ecological.temperature_dem;
@@ -55,6 +56,7 @@ end
       [forcing.temperature_dem_vec(:,itime) forcing.indlat forcing.indlon]   = function_map_2_vec(squeeze(forcing.temperature_dem(:,:,itime)),squeeze(forcing.mask(:,:,1)));
       [forcing.temperature_dem_K_vec(:,itime) forcing.indlat forcing.indlon] = function_map_2_vec(squeeze(forcing.temperature_dem_K(:,:,itime)),squeeze(forcing.mask(:,:,1)));
   end % itime
+  [forcing.no3min_vec forcing.indlat forcing.indlon]              = function_map_2_vec(forcing.no3min,squeeze(forcing.mask(:,:,1)));
   [forcing.surf_vec forcing.indlat forcing.indlon]                = function_map_2_vec(forcing.surf,squeeze(forcing.mask(:,:,1)));
   forcing.nvec=size(forcing.surf_vec,1);
 %**************************************************************************************************************

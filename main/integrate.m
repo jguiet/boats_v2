@@ -64,7 +64,7 @@ function boats = integrate(boats)
  ECON=boats.param.economy;
  FORC=boats.forcing;
  STRU=boats.structure;
- 
+ INIT=boats.initial;
  
  %--------------------------------------------------------------------------------------------------------------
  % Defines Ecologic simulations
@@ -375,14 +375,14 @@ for indt = 1:ntime
   % Optimized code by using "bsxfun" instead of repmat
   if (ECOL.pelagic)&&(ECOL.demersal)
       en_input_P(:,:,1:3,:) = bsxfun(@times,npp./mphyto, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d(1:3,:).^(ECOL.tro_sca(1)-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca(1)-1)) .* ... 
+                   (bsxfun(@rdivide,STRU.fmass_4d(:,:,1:3,:).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass])-1),mphyto.^(INIT.tro_sca(:,:,1)-1)) .* ... 
                    STRU.fmass_4d(:,:,1:3,:) ./ squeeze(dfish(:,:,1:3,:) + CONV.epsln) * part_PP_g));
       en_input_P(:,:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d(4:6,:).^(ECOL.tro_sca(2)-1),[3 4 1 2]),mbenthos.^(ECOL.tro_sca(2)-1)) .* ... 
+                   (bsxfun(@rdivide,STRU.fmass_4d(:,:,4:6,:).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish ECOL.nfmass])-1),mbenthos.^(INIT.tro_sca(:,:,2)-1)) .* ... 
                    STRU.fmass_4d(:,:,4:6,:) ./ squeeze(dfish(:,:,4:6,:) + CONV.epsln) * part_PP_g));
   else
       en_input_P = bsxfun(@times,npp./mphyto, ...
-                   (bsxfun(@rdivide,permute(STRU.fmass_2d.^(ECOL.tro_sca(1)-1),[3 4 1 2]),mphyto.^(ECOL.tro_sca(1)-1)) .* ... 
+                   (bsxfun(@rdivide,STRU.fmass_4d(:,:,1:3,:).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass])-1),mphyto.^(INIT.tro_sca(:,:,1)-1)) .* ... 
                    STRU.fmass_4d ./ squeeze(dfish + CONV.epsln) * part_PP_g));
   end
    
@@ -438,10 +438,10 @@ for indt = 1:ntime
   % Boundary condition based on primary production
   % multiply by boundary condition partition function (part_PP_b)
   if (ECOL.pelagic)&&(ECOL.demersal)
-      flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca(1)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
-      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(ECOL.tro_sca(2)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
+      flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
   else
-      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(ECOL.tro_sca(1)-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
+      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(repmat(ECOL.tro_sca(:,:,1),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
   end
   %---------------------------------------------------------------------------------------
   % Flux in of number of eggs produced

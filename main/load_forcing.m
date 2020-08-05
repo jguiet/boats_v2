@@ -23,6 +23,7 @@ forcing.npp_ed=Ecological.npp_ed;
 forcing.npp_ed(find(forcing.mask==1))=NaN;
 forcing.pfb=Ecological.pfb;
 forcing.pfb(find(forcing.mask==1))=NaN;
+forcing.no3min=Ecological.no3min;
 forcing.temperature_pel=Ecological.temperature_pel;
 forcing.temperature_pel_K=Ecological.temperature_pel+boats.param.conversion.C_2_K;
 forcing.temperature_dem=Ecological.temperature_dem;
