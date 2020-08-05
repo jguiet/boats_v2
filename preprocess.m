@@ -41,10 +41,10 @@ ntime = 12;                                         % ntime = t distinct time st
 ngroup = 3;                                         % ngroup = g fish groups per forcing (facultativ)
 nensemble = 5;                                      % nensemble = e ensembles per forcing (facultativ)
 % mask
-mask_path = 'frc/geo_time.mat';                     % Path of forcing dataset where is the mask
-mask_var = 'geo_time.mask_land_2d';                 % Name of mask variable in mask_path
-wet=0;                                              % Value for ocean cells in mask_var
-dry=1;                                              % Value for continent cells in mask_var
+mask_path = 'frc/mask_notlme_high_nan.mat';                     % Path of forcing dataset where is the mask
+mask_var = 'mask_notlme_high_nan';                 % Name of mask variable in mask_path
+wet=1;                                              % Value for ocean cells in mask_var
+dry=NaN;                                            % Value for continent cells in mask_var
 mask_dim = [nlat nlon 1 1 1];                       % Dimension of the mask forcing generated
 % coordinates lon/lat
 lon_path = 'frc/geo_time.mat';                      % Path of forcing dataset where is the longitude
@@ -74,19 +74,28 @@ npp_unit = '[mmolC m^-2 d^-1]';                     % npp_var unit ([mgC m^-2 d^
 npp_dim = [nlat nlon ntime 1 1];                    % Dimension of the npp array generated
 % pfb
 b 	= -0.8;					    % Exponent for Martin's curve attenuation (typical value = -0.8)
+% Iron
+no3min_path = 'frc/woa05_min_no3.mat';              % Path of forcing dataset where is min no3
+no3min_var = 'min_no3';                             % Name of min no3 variable in npp_path
+no3min_unit = '[??]';                               % no3min_var unit (??)
+no3min_dim = [nlat nlon 1 1 1];                     % Dimension of the no3 min array generated
+% Topo, high and/or low resolution
 depth_path_high    = 'frc/ETOPO_depth.mat';         % Path of forcing dataset where is the depth at high resolution 
 depth_var_high 	   = 'ETOPO';                       % Name of depth variable in depth_path_high
-lon_depth_var_high = 'LON';			    % Longitude of depth variable in depth_path_high
+lon_depth_var_high = 'LON';			           % Longitude of depth variable in depth_path_high
 lat_depth_var_high = 'LAT';			    % Latitude of depth variable in depth_path_high
 depth_dim_high = [1800 3600 1 1 1];	            % Dimension of the high resolution depth array generated
+depth_path_low    = 'frc/data_monthly_orig.mat';         % Path of forcing dataset where is the depth at high resolution 
+depth_var_low 	   = 'data_monthly.etopo';                       % Name of depth variable in depth_path_high
+depth_dim_low = [180 360 1 1 1];	            % Dimension of the high resolution depth array generated
 % temperature pelagic
 temp_path_pel = 'frc/data_monthly_orig.mat';        % Path of forcing dataset where is the pelagic temperature
 temp_var_pel = 'data_monthly.temp75';               % Name of temperature variable in temp_path         
 temp_unit_pel = '[degC]';                           % temp_var unit ([degC])
 temp_dim_pel = [nlat nlon ntime 1 1];               % Dimension of the temp array generated
 % temperature demersal
-temp_path_dem = 'bot_temp.mat';                     % Path of forcing dataset where is the demersal temperature
-temp_var_dem = 'bot_temp_c';                          % Name of temperature variable in temp_path
+temp_path_dem = 'frc/temp_bot.mat';                     % Path of forcing dataset where is the demersal temperature
+temp_var_dem = 'temp_bot_c';                          % Name of temperature variable in temp_path
 temp_unit_dem = '[degC]';                           % temp_var unit ([degC])
 temp_dim_dem = [nlat nlon ntime 1 1];               % Dimension of the temp array generatede
 
@@ -110,7 +119,7 @@ catch_path = 'input/EcoForcing/catchability_forcing.mat'; % Path of forcing data
 catch_var = 'udef';                                 % Name of catchability variable in catch_path or user defined (udef)
 catch_type = 'rate';                                % Type of user defined cost if cost_var = 'udef' (constant cst or rate or ??)
 catch_ref1 = 7.6045e-08;                            % First parameter for user defined catchability forcing
-catch_ref2 = 0.05;                                  % Second parameter for user defined catchability forcing
+catch_ref2 = 0.07;                                  % Second parameter for user defined catchability forcing
 catch_dim=[1 1 3600];                               % Dimension of user defined catchability forcing
 catch_unit = '[m^2 W^-1 s^-1]';                     % catch_var unit ([m^2 W^-1 s^-1] or ??)
 
@@ -152,7 +161,8 @@ if create_ecology
     % Create temperature *************************
     temperature_pel=get_var(temp_path_pel,temp_var_pel,temp_dim_pel);
     temperature_dem=get_var(temp_path_dem,temp_var_dem,temp_dim_dem);
-    temperature_dem=correctdem(temperature_pel,temperature_dem,data_monthly.etopo,ed);
+    depth_low=get_var(depth_path_low,depth_var_low,depth_dim_low);
+    temperature_dem=correctdem(temperature_pel,temperature_dem,depth_low,ed);
     % Create pfb *********************************
     depth_high=get_var(depth_path_high,depth_var_high,depth_dim_high);
     tmp = depth_high;
@@ -165,6 +175,8 @@ if create_ecology
     martin_att_bin = bin_var(martin_att,lon_high,lat_high,lon,lat);
     pep     = particle_export(npp,temperature_pel,ed);
     pfb		= pep.*npp.*repmat(martin_att_bin,[1,1,size(npp,3)]);
+    % Create te_no3 *********************************
+    no3min=get_var(no3min_path,no3min_var,no3min_dim);
     % Plot forcings ******************************
     if plot_input
         % surface
@@ -186,6 +198,7 @@ if create_ecology
     Ecological.npp=npp;
     Ecological.npp_ed=npp_ed;
     Ecological.pfb=pfb;
+    Ecological.no3min=no3min;
     Ecological.temperature_pel=temperature_pel;
     Ecological.temperature_dem=temperature_dem;
     save('Ecological.mat','Ecological','-v7.3')
