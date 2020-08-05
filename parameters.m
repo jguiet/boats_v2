@@ -18,7 +18,7 @@
  boats.param.main.save_restart = 1;                                        % Save restart: yes=1 ; no=0
  boats.param.main.save_output  = 1;                                        % Save output: yes=1 ; no=0
 % Simulation features *****************************
- boats.param.main.run_length   = 1;%300;                                      % Simulation length in years 
+ boats.param.main.run_length   = 200;%300;                                      % Simulation length in years 
  boats.param.main.dtt          = 30;                                       % days per timestep
  boats.param.main.nforcing     = 12;                                       % number of forcing to loop
  boats.param.main.param_ens    = 1;                                        % Use parameters ensembles: yes=1 ; no=0
@@ -59,7 +59,7 @@
  boats.param.environment.mc_phy_l     = 5.6234132519e-06;                  % mass of typical large phytoplankton (g)
  boats.param.environment.mc_phy_s     = 5.6234132519e-15;                  % mass of typical small phytoplankton (g)
  boats.param.environment.cap_npp      = 10000;                             % limit on npp (m mol C m-2 d-)
- boats.param.environment.mc_benthic   = 0.02;                  % mass of typical benthic organism (b) 
+ boats.param.environment.mc_benthic   = 1/1000*0.02;                  % mass of typical benthic organism (b) 
  
 %**************************************************************************
 % PARAMS RELATED TO THE ECOLOGICAL MODULE 
@@ -89,7 +89,9 @@
  boats.param.ecology.eta_alpha   = 0.25;						           % mass at maturity as fraction of asymptotic mass 
  boats.param.ecology.malpha      = boats.param.ecology.eta_alpha*boats.param.ecology.minf; % maturity mass
  boats.param.ecology.nfish       = length(boats.param.ecology.minf);       % number of fish groups
- 
+% Iron Limitation *********************************
+ boats.param.ecology.kfe         = 5;                                      % coefficient determining sensitivity of fish biomass to iron (No3) concentration
+                                                                           % set high (1e6) to have no limitation!
 
 %**************************************************************************
 % PARAMS RELATED TO THE ECONOMICAL MODULE 
