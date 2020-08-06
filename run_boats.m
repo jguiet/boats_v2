@@ -1,4 +1,4 @@
-function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params)
+function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params, varargin)
 %**************************************************************************
 % BOATS MAIN
 % The BiOeconomic mArine Trophic Size-spectrum model computes the
@@ -30,8 +30,26 @@ function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params)
 % LOAD INPUT
 %**************************************************************************
  parameters;
- 
- 
+
+%************************************************************************** 
+% OPIONAL ARGUMENTS
+%**************************************************************************
+nVarargs = length(varargin);
+for k = 1:nVarargs
+   switch varargin{k}
+   case 'PP'
+       boats.param.main.sim_init     = 'PP'; 
+   case 'restart'
+       boats.param.main.sim_init     = 'restart';
+   case 'h'
+       boats.param.main.sim_type     = 'h';
+   case 'nh'
+       boats.param.main.sim_type     = 'nh';
+   otherwise
+      error(['Argument ' varargin{k} ' not specified']);
+   end
+end
+
 %**************************************************************************
 % PREPARE SIMULATION
 %**************************************************************************
@@ -64,8 +82,8 @@ function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params)
    % UPDATE PARAMETERS FOR ENSEMBLES
    %***********************************************************************
    if boats.param.main.param_ens
-     %boats.param.main.sname_rest = ['_ind_' num2str(ens_index(indr))]; % ATT JG
-     boats.param.main.sname_rest = ['_ind_' ens_param.name(indr,:)];
+     boats.param.main.sname_rest = ['_ind_' num2str(ens_param.ens_index(indr))]; % ATT JG
+     %boats.param.main.sname_rest = ['_ind_' ens_param.name(indr,:)];
      boats.param = modify_parameters(boats,...
                     'E_activation_A',ens_param.E_activation_A(indr,:), ...
                     'kappa_eppley',ens_param.kappa_eppley(indr,:), ...
