@@ -172,9 +172,10 @@ if create_ecology
     lon_high =lon_high + 180;
     lat_high=get_var(depth_path_high,lat_depth_var_high,depth_dim_high);
     martin_att  = martin_attenuation(depth_high,ed,b);
+keyboard
     martin_att_bin = bin_var(martin_att,lon_high,lat_high,lon,lat);
     pep     = particle_export(npp,temperature_pel,ed);
-    pfb		= pep.*npp.*repmat(martin_att_bin,[1,1,size(npp,3)]);
+    pfb		= pep.*repmat(martin_att_bin,[1,1,size(npp,3)]);
     % Create te_no3 *********************************
     no3min=get_var(no3min_path,no3min_var,no3min_dim);
     % Plot forcings ******************************
