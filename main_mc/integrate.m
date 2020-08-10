@@ -191,16 +191,16 @@ function boats = integrate(boats)
        outmode.(tmode).it_bounds = [vec1 vec2];
     case 'snap10year'
        % one year every 10 years
-       odt  = (10*30*12*sperd) /dtts; 
-       odt1 = (1*30*12*sperd) /dtts; 
-       oendt = time(end)/dtts;
+       odt  = (10*30*12*CONV.sperd) /MAIN.dtts; 
+       odt1 = (1*30*12*CONV.sperd) /MAIN.dtts; 
+       oendt = time(end)/MAIN.dtts;
        vec2 = [odt:odt:oendt]';
        vec1 = vec2-odt1+1;
        outmode.(tmode).it_bounds = [vec1 vec2];
     case 'final'
        % Final year only
-       odt = (30*12*sperd) /dtts; 
-       oendt = time(end)/dtts;
+       odt = (30*12*CONV.sperd) /MAIN.dtts; 
+       oendt = time(end)/MAIN.dtts;
        outmode.(tmode).it_bounds = [oendt-odt+1 oendt];
     otherwise
        % Uses user-defined time bounds and convert from years
@@ -381,6 +381,12 @@ for indt = 1:ntime
       en_input_P(:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
                    (bsxfun(@rdivide,STRU.fmass_4d_vec(:,4:6,:).^(repmat(INIT.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass])-1),repmat(mbenthos.^(INIT.tro_sca(1,2)-1),[size(pfb,1) ECOL.nfish ECOL.nfmass])) .* ... 
                    STRU.fmass_4d_vec(:,4:6,:) ./ squeeze(dfish(:,4:6,:) + CONV.epsln) * part_PP_g));
+%       en_input_P(:,1:3,:) = bsxfun(@times,npp./mphyto, ...
+%                    (STRU.fmass_4d_vec(:,1:3,:)./repmat(mphyto,[1 ECOL.nfish ECOL.nfmass])).^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])-1) .* ... 
+%                    STRU.fmass_4d_vec(:,1:3,:) ./ squeeze(dfish(:,1:3,:) + CONV.epsln) * part_PP_g);
+%       en_input_P(:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
+%                    (STRU.fmass_4d_vec(:,4:6,:)./repmat(mbenthos,[size(pfb,1) ECOL.nfish ECOL.nfmass])).^(INIT.tro_sca(1,2)-1) .* ... 
+%                    STRU.fmass_4d_vec(:,4:6,:) ./ squeeze(dfish(:,4:6,:) + CONV.epsln) * part_PP_g);
   else
       en_input_P = bsxfun(@times,npp./mphyto, ...
                    (bsxfun(@rdivide,STRU.fmass_4d_vec.^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])-1),repmat(mphyto.^(INIT.tro_sca(:,1)-1),[1 ECOL.nfish ECOL.nfmass])) .* ... 
@@ -594,7 +600,7 @@ for indt = 1:ntime
 %   % Original code - changed to optimize calculation
 %   revenue = nansum( permute(repmat(price,[1 1 nlat nlon]),[3 4 1 2]) .* squeeze(dharvest) .* delfm_4d, 4);
     % Optimized code by using "bsxfun" instead of repmat
-    revenue = nansum(bsxfun(@times,permute(price,[3 1 2]),squeeze(dharvest) .* STRU.delfm_4d_vec),4);
+    revenue = nansum(bsxfun(@times,permute(price,[3 1 2]),squeeze(dharvest) .* STRU.delfm_4d_vec),3);
     
     %-------------------------------------------------------------------------------------
     % cost [nlat,nlon,nfish]
@@ -624,7 +630,7 @@ for indt = 1:ntime
     effort = squeeze(effort) + effort_change * MAIN.dtts;
     mask_effort_neg = (squeeze(effort) < 0);
     effort(mask_effort_neg)  = 0;
- 
+    
   end % end integrate
   
   
