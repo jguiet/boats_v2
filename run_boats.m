@@ -22,7 +22,7 @@ function [boats] = run_boats(Ecological_frc, Economical_frc, Userdef_Params, var
 % Outputs:
 %   - Boats.mat
 %**************************************************************************
- addpath('main')
+ addpath('main_mc')
  addpath('general')
  
  
@@ -45,6 +45,12 @@ for k = 1:nVarargs
        boats.param.main.sim_type     = 'h';
    case 'nh'
        boats.param.main.sim_type     = 'nh';
+   case 'annual'
+       output_freq = {'annual'};
+   case 'snap10year'
+       output_freq = {'snap10year'};
+   case 'final'
+       output_freq = {'final'};     
    otherwise
       error(['Argument ' varargin{k} ' not specified']);
    end
@@ -114,7 +120,7 @@ end
    %***********************************************************************
    % PREPARE OUTPUT
    %***********************************************************************  
-   boats.output = initialize_output({'annual'});
+   boats.output = initialize_output(output_freq);
    
    
    %***********************************************************************

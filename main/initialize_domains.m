@@ -146,12 +146,16 @@ function initial = initialize_domains(boats)
          if isfield(restart,'effort')
            initial.effort  = restart.effort;
          else
-         % Set effort to zero in each group
-	    if (ECOL.pelagic)&&(ECOL.demersal) 
-                initial.effort = zeros(FORC.nlat,FORC.nlon,2*ECOL.nfish);
-	    else
-		initial.effort = zeros(FORC.nlat,FORC.nlon,ECOL.nfish);
-	    end
+            % Set effort to zero in each group
+            if (ECOL.pelagic)&&(ECOL.demersal) 
+                initial.effort = repmat(FORC.mask(:,:,1),[1,1,2*ECOL.nfish]);
+                initial.effort(find(initial.effort==1)) = NaN;
+                    %ATT JG initial.effort = zeros(FORC.nlat,FORC.nlon,2*ECOL.nfish);
+            else
+                initial.effort = repmat(FORC.mask(:,:,1),[1,1,ECOL.nfish]);
+                initial.effort(find(initial.effort==1)) = NaN;
+                    %ATT JG initial.effort = zeros(FORC.nlat,FORC.nlon,ECOL.nfish);
+            end
          end              
        end
      end

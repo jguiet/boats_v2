@@ -43,8 +43,12 @@ nensemble = 5;                                      % nensemble = e ensembles pe
 % mask
 mask_path = 'frc/mask_notlme_high_nan.mat';                     % Path of forcing dataset where is the mask
 mask_var = 'mask_notlme_high_nan';                 % Name of mask variable in mask_path
+%mask_path = 'frc/geo_time.mat';                     % Path of forcing dataset where is the mask
+%mask_var = 'geo_time.mask_land_2d';                 % Name of mask variable in mask_path
 wet=1;                                              % Value for ocean cells in mask_var
 dry=NaN;                                            % Value for continent cells in mask_var
+%wet=0;                                              % Value for ocean cells in mask_var
+%dry=1;                                            % Value for continent cells in mask_var
 mask_dim = [nlat nlon 1 1 1];                       % Dimension of the mask forcing generated
 % coordinates lon/lat
 lon_path = 'frc/geo_time.mat';                      % Path of forcing dataset where is the longitude
@@ -172,7 +176,6 @@ if create_ecology
     lon_high =lon_high + 180;
     lat_high=get_var(depth_path_high,lat_depth_var_high,depth_dim_high);
     martin_att  = martin_attenuation(depth_high,ed,b);
-keyboard
     martin_att_bin = bin_var(martin_att,lon_high,lat_high,lon,lat);
     pep     = particle_export(npp,temperature_pel,ed);
     pfb		= pep.*repmat(martin_att_bin,[1,1,size(npp,3)]);
