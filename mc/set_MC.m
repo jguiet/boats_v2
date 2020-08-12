@@ -51,6 +51,12 @@ function MParams = set_MC(Community)
  sel_pos_scale_mean = (sel_pos_scale_low + sel_pos_scale_high)/2;
  sel_pos_scale_std  = (sel_pos_scale_high - sel_pos_scale_mean)/sqrt(3); 
 
+ % mc_benthic
+ mc_benthic_low = 1/5000*0.001;
+ mc_benthic_high = 1/5000*0.5;
+ mc_benthic_mean = (mc_benthic_low + mc_benthic_high)/2;
+ mc_benthic_std  = (mc_benthic_high - mc_benthic_mean)/sqrt(3);
+
  if strcmp(Community,'Pelagic')
  MParams = {
 		'E_activation_A',	 0.45,	             0.09,          NaN,   NaN,     NaN,     'normal';
@@ -59,15 +65,16 @@ function MParams = set_MC(Community)
         'A00',               4.46,	             0.5,           NaN,   NaN,     NaN,     'normal';
         'te',                0.13,	             0.04,          NaN,   NaN,     NaN,     'uniform';
 	    'ppmr',              5000,	             2500,          NaN,   NaN,     NaN,     'uniform';
-	    'kappa_eppley',	     0.0631,             0.009,	        NaN,   NaN,     NaN,     'normal';
-		'Prod_star',	     0.37,	             0.1,	        NaN,   NaN,     NaN,     'normal';        
+%	    'kappa_eppley',	     0.0631,             0.009,	        NaN,   NaN,     NaN,     'normal';
+%		'Prod_star',	     0.37,	             0.1,	        NaN,   NaN,     NaN,     'normal';        
         'zeta1',   	         zeta1_mean,	     zeta1_std,     NaN,   NaN,     NaN,     'normal';
 %        'zeta1',	     0.45,	 0.24,	 'lognormal';
         'h_allo',	         h_allo_mean,        h_allo_std,    NaN,   NaN,     NaN,     'normal';
 %        'h_allo',	  0.44,		0.18,		'normal';
         'egg_surv',          0.05,               0.028,         NaN,   NaN,     NaN,     'uniform';
-        'sel_slope',         sel_slope_mean,     sel_slope_std, NaN,   NaN,     NaN,     'uniform';
-        'sel_pos_scale',     0.8,                0.288,         NaN,   NaN,     NaN,     'uniform'};
+%        'sel_slope',         sel_slope_mean,     sel_slope_std, NaN,   NaN,     NaN,     'uniform';
+        'sel_pos_scale',     0.8,                0.288,         NaN,   NaN,     NaN,     'uniform';
+        'mc_benthic',        mc_benthic_mean,    mc_benthic_std,NaN,   NaN,     NaN,     'uniform'};  
  elseif strcmp(Community,'Demersal')
  MParams = {
 		'E_activation_A',	 0.45,	             0.09,          NaN,   NaN,     NaN,     'normal';
@@ -76,15 +83,16 @@ function MParams = set_MC(Community)
         'A00',               4.46,	             0.5,           NaN,   NaN,     NaN,     'normal';
         'te',                0.13,	             0.04,          NaN,   NaN,     NaN,     'uniform';
 	    'ppmr',              5000,	             2500,          NaN,   NaN,     NaN,     'uniform';
-	    'kappa_eppley',	     0.0631,             0.009,	        NaN,   NaN,     NaN,     'normal';
-		'Prod_star',	     0.37,	             0.1,	        NaN,   NaN,     NaN,     'normal';        
+%	    'kappa_eppley',	     0.0631,             0.009,	        NaN,   NaN,     NaN,     'normal';
+%		'Prod_star',	     0.37,	             0.1,	        NaN,   NaN,     NaN,     'normal';        
         'zeta1',   	         zeta1_mean,	     zeta1_std,     NaN,   NaN,     NaN,     'normal';
 %        'zeta1',	     0.45,	 0.24,	 'lognormal';
         'h_allo',	         h_allo_mean,        h_allo_std,    NaN,   NaN,     NaN,     'normal';
 %        'h_allo',	  0.44,		0.18,		'normal';
         'egg_surv',          0.05,               0.028,         NaN,   NaN,     NaN,     'uniform';
-        'sel_slope',         sel_slope_mean,     sel_slope_std, NaN,   NaN,     NaN,     'uniform';
-        'sel_pos_scale',     0.8,                0.288,         NaN,   NaN,     NaN,     'uniform'};     
+%        'sel_slope',         sel_slope_mean,     sel_slope_std, NaN,   NaN,     NaN,     'uniform';
+        'sel_pos_scale',     0.8,                0.288,         NaN,   NaN,     NaN,     'uniform';  
+        'mc_benthic',        mc_benthic_mean,    mc_benthic_std,NaN,   NaN,     NaN,     'uniform'};
  end
 
 %**************************************************************************************************************

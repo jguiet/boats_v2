@@ -40,7 +40,7 @@ function initial = initialize_domains(boats)
      frac_lg_du = s_over_p ./ (1.0 + s_over_p);                            % large fraction of PP as in Dunne et al. (2005)
      mphyto     = (ENVI.mc_phy_l.^frac_lg_du) .* (ENVI.mc_phy_s.^(1.0 - frac_lg_du));
   
-     mbentho    = ENVI.mc_benthic;  
+     mbentho    = ENVI.mc_benthic(1);  
      
      if (ECOL.pelagic)&&(ECOL.demersal)
          temp_dep_A_P = exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel - 1./ENVI.temp_ref_A));

@@ -54,12 +54,12 @@
  boats.param.environment.k_Boltzmann    = 8.617e-05;                       % Boltzmann Constant (eV K-1)
  boats.param.environment.temp_ref_A     = 10 + 273.15;                     % Reference temperature (K) (Andersen and Beyer, 2013, p. 18)
 % Primary production ******************************
- boats.param.environment.kappa_eppley = [0.063 0];                             % Eppley constant (degC-1)
- boats.param.environment.Prod_star    = [0.37 0];                              % Pivotal primary production (m mol C m-3 d-1)
+ boats.param.environment.kappa_eppley = [0.06 0];                             % Eppley constant (degC-1)
+ boats.param.environment.Prod_star    = [0.35 0];                              % Pivotal primary production (m mol C m-3 d-1)
  boats.param.environment.mc_phy_l     = 5.6234132519e-06;                  % mass of typical large phytoplankton (g)
  boats.param.environment.mc_phy_s     = 5.6234132519e-15;                  % mass of typical small phytoplankton (g)
  boats.param.environment.cap_npp      = 10000;                             % limit on npp (m mol C m-2 d-)
- boats.param.environment.mc_benthic   = 1/1000*0.02;                  % mass of typical benthic organism (b) 
+ boats.param.environment.mc_benthic   = 1/5000*0.02;                  % mass of typical benthic organism (b) 
  
 %**************************************************************************
 % PARAMS RELATED TO THE ECOLOGICAL MODULE 
@@ -107,7 +107,7 @@
  boats.param.economy.sel_pos_2          = 0.5;                             % Selectivity position shift 2
  boats.param.economy.sel_pos_3          = 0.25;                            % Selectivity position shift 3
  boats.param.economy.sel_pos_scale      = [1 1];                               % Selectivity position scale
- boats.param.economy.sel_slope          = [18 18];                              % Selectivity slope
+ boats.param.economy.sel_slope          = [17.8 18];                              % Selectivity slope
  boats.param.economy.harvest_start      = 0;                               % Year of starting harvest [y]
  boats.param.economy.qcatch0            = 1e-5 * 1.05^(-100);              % Base catchability
  boats.param.economy.price_0            = boats.param.economy.price_global;% Base price (constant)
