@@ -70,7 +70,7 @@ function initial = initialize_domains(boats)
          te_no3 = ECOL.te(1) * (1 - (FORC.no3min ./ (ECOL.kfe + FORC.no3min) ) );
          initial.tro_sca(:,:,1) = log10(te_no3) ./ log10(ECOL.ppmr(1));
      end
-     
+    
      %---------------------------------
      % Calculate initial dfish
      if (ECOL.pelagic)&&(ECOL.demersal)
@@ -78,14 +78,13 @@ function initial = initialize_domains(boats)
          ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(initial.tro_sca(:,:,1)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
          STRU.minf_4d.^(ECOL.h_allo(1) + ECOL.b_allo(1) - 1)) .* STRU.fmass_4d(:,:,1:3,:).^(repmat(initial.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(1) - 1);
          dfish_D      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,:,2),[1 1 ECOL.nfish ECOL.nfmass])) .* repmat(pfb,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
-         ( repmat(mortality0_D,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(initial.tro_sca(1,1,2)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...
-         STRU.minf_4d.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d(:,:,4:6,:).^(repmat(initial.tro_sca(:,2),[1 1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(2) - 1);         
+         ( repmat(mortality0_D,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho(2).^(initial.tro_sca(1,1,2)),[FORC.nlat,FORC.nlon ECOL.nfish ECOL.nfmass]) .* ...
+         STRU.minf_4d.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d(:,:,4:6,:).^(repmat(initial.tro_sca(:,:,2),[1 1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(2) - 1);         
 
          %---------------------------------
          % Make non existent cells NaNs
-         dfish_P(STRU.mask_notexist_4d) = NaN;
-         dfish_D(STRU.mask_notexist_4d) = NaN;
          initial.dfish = cat(3,dfish_P,dfish_D);
+         initial.dfish(STRU.mask_notexist_4d) = NaN;
      else
          dfish_P      = (1/ECOL.nfish) * (1 - repmat(ECOL.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass])) .* repmat(npp,[1 1 ECOL.nfish ECOL.nfmass]) ./ ...
          ( repmat(mortality0_P,[1 1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(ECOL.tro_sca(:,:,1)),[1 1 ECOL.nfish ECOL.nfmass]) .* ...

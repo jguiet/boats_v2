@@ -62,13 +62,13 @@ function structure = set_structure(boats,varargin)
  mask_notexist_2d   = (repmat(structure.fmass,[ECOL.nfish 1]) >  ...
                        repmat(ECOL.minf,[ECOL.nfmass 1])'); 		% NaN where mass is > asymptotic mass
  structure.mask_notexist_4d = permute(repmat(mask_notexist_2d,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
- structure.mask_notexist_4d = structure.mask_notexist_4d;                % NaN where mass is > asymptotic mass
  mask_land_2d     = double(FORC.mask(:,:,1));
  if (ECOL.pelagic)&&(ECOL.demersal)
      mask_land_g_1    = double(repmat(mask_land_2d,[1 1 2*ECOL.nfish]));        % land mask groups 1 timestep
      mask_land_g_s_1  = double(repmat(mask_land_2d,[1 1 2*ECOL.nfish ECOL.nfmass])); % land mask integrated mass classes 1 timestep
      structure.mask_land_g_nan  = mask_land_g_1; structure.mask_land_g_nan(mask_land_g_1==1)=nan;
-     structure.mask_land_g_s_nan= mask_land_g_s_1; structure.mask_land_g_s_nan(mask_land_g_s_1==1)=nan; 
+     structure.mask_land_g_s_nan= mask_land_g_s_1; structure.mask_land_g_s_nan(mask_land_g_s_1==1)=nan;
+     structure.mask_notexist_4d = cat(3,structure.mask_notexist_4d,structure.mask_notexist_4d); % NaN where mass is > asymptotic mass 
  else
      mask_land_g_1    = double(repmat(mask_land_2d,[1 1 ECOL.nfish]));        % land mask groups 1 timestep
      mask_land_g_s_1  = double(repmat(mask_land_2d,[1 1 ECOL.nfish ECOL.nfmass])); % land mask integrated mass classes 1 timestep

@@ -329,7 +329,6 @@ function boats = integrate(boats)
 % MAIN LOOP
 %--------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------------------------
-
 for indt = 1:ntime
 
   % local month
@@ -375,12 +374,17 @@ for indt = 1:ntime
   % Optimized code by using "bsxfun" instead of repmat
 
   if (ECOL.pelagic)&&(ECOL.demersal)
+%       en_input_P(:,1:3,:) = repmat(npp./mphyto,[1 ECOL.nfish ECOL.nfmass]) .* ...
+%                             STRU.fmass_4d_vec(:,1:3,:).^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])-1)    ./ repmat(mphyto.^(INIT.tro_sca(:,1)-1) ,[1 ECOL.nfish ECOL.nfmass]) .* ...
+%                             STRU.fmass_4d_vec(:,1:3,:) ./ squeeze(dfish(:,1:3,:) + CONV.epsln) * part_PP_g;
+
       en_input_P(:,1:3,:) = bsxfun(@times,npp./mphyto, ...
                    (bsxfun(@rdivide,STRU.fmass_4d_vec(:,1:3,:).^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])-1),repmat(mphyto.^(INIT.tro_sca(:,1)-1),[1 ECOL.nfish ECOL.nfmass])) .* ... 
                    STRU.fmass_4d_vec(:,1:3,:) ./ squeeze(dfish(:,1:3,:) + CONV.epsln) * part_PP_g));
       en_input_P(:,4:6,:) = bsxfun(@times,pfb./mbentho, ...
                    (bsxfun(@rdivide,STRU.fmass_4d_vec(:,4:6,:).^(repmat(INIT.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass])-1),repmat(mbentho.^(INIT.tro_sca(1,2)-1),[size(pfb,1) ECOL.nfish ECOL.nfmass])) .* ... 
                    STRU.fmass_4d_vec(:,4:6,:) ./ squeeze(dfish(:,4:6,:) + CONV.epsln) * part_PP_g));
+
 %       en_input_P(:,1:3,:) = bsxfun(@times,npp./mphyto, ...
 %                    (STRU.fmass_4d_vec(:,1:3,:)./repmat(mphyto,[1 ECOL.nfish ECOL.nfmass])).^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])-1) .* ... 
 %                    STRU.fmass_4d_vec(:,1:3,:) ./ squeeze(dfish(:,1:3,:) + CONV.epsln) * part_PP_g);
@@ -477,7 +481,7 @@ for indt = 1:ntime
   %---------------------------------------------------------------------------------------
   % Boundary condition (Beverton-Holt form)
   flux_in(:,:,1) = flux_in_P .* ((flux_in_rep + CONV.epsln) ./ (flux_in_P + flux_in_rep + CONV.epsln));
-  
+    
   %---------------------------------------------------------------------------------------
   % Flux in of other mass classes
   flux_in(:,:,2:end) = gamma(:,:,1:end-1) .* squeeze(dfish(:,:,1:end-1)) ./ STRU.delfm_2end_4d_vec;

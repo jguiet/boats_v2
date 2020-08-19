@@ -62,13 +62,13 @@ function structure = set_structure(boats,varargin)
  mask_notexist_2d   = (repmat(structure.fmass,[ECOL.nfish 1]) >  ...
                        repmat(ECOL.minf,[ECOL.nfmass 1])'); 		% NaN where mass is > asymptotic mass
  structure.mask_notexist_4d = permute(repmat(mask_notexist_2d,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
- structure.mask_notexist_4d = structure.mask_notexist_4d;                % NaN where mass is > asymptotic mass
  mask_land_2d     = double(FORC.mask(:,:,1));
  if (ECOL.pelagic)&&(ECOL.demersal)
      mask_land_g_1    = double(repmat(mask_land_2d,[1 1 2*ECOL.nfish]));        % land mask groups 1 timestep
      mask_land_g_s_1  = double(repmat(mask_land_2d,[1 1 2*ECOL.nfish ECOL.nfmass])); % land mask integrated mass classes 1 timestep
      structure.mask_land_g_nan  = mask_land_g_1; structure.mask_land_g_nan(mask_land_g_1==1)=nan;
-     structure.mask_land_g_s_nan= mask_land_g_s_1; structure.mask_land_g_s_nan(mask_land_g_s_1==1)=nan; 
+     structure.mask_land_g_s_nan= mask_land_g_s_1; structure.mask_land_g_s_nan(mask_land_g_s_1==1)=nan;
+     structure.mask_notexist_4d = cat(3,structure.mask_notexist_4d,structure.mask_notexist_4d);                % NaN where mass is > asymptotic mass 
  else
      mask_land_g_1    = double(repmat(mask_land_2d,[1 1 ECOL.nfish]));        % land mask groups 1 timestep
      mask_land_g_s_1  = double(repmat(mask_land_2d,[1 1 ECOL.nfish ECOL.nfmass])); % land mask integrated mass classes 1 timestep
@@ -108,15 +108,13 @@ function structure = set_structure(boats,varargin)
      rep_scale_P              = nan(ECOL.nfish,ECOL.nfmass);
      rep_scale_D              = nan(ECOL.nfish,ECOL.nfmass);
      for indf = 1:ECOL.nfish
-       rep_scale_P(indf,:)    = sigmoid_And_mass(structure.fmass,ECOL.rep_pos*ECOL.malpha(indf),ECOL.rep_slope);
-       rep_scale_D(indf,:)    = sigmoid_And_mass(structure.fmass,ECOL.rep_pos*ECOL.malpha(indf),ECOL.rep_slope);
+       rep_scale(indf,:)    = sigmoid_And_mass(structure.fmass,ECOL.rep_pos*ECOL.malpha(indf),ECOL.rep_slope);
      end
-     rep_scale_P_4d           = permute(repmat(rep_scale_P,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
-     rep_scale_D_4d           = permute(repmat(rep_scale_D,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
-     rep_alloc_frac_P         = rep_scale_P_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,1:3,:)./structure.minf_4d).^(ECOL.b_allo(1)-1) - ECOL.eff_a);
-     rep_alloc_frac_D         = rep_scale_D_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,4:6,:)./structure.minf_4d).^(ECOL.b_allo(2)-1) - ECOL.eff_a);
- 
-    structure.rep_alloc_frac = cat(3,rep_alloc_frac_P,rep_alloc_frac_D);
+     rep_scale_4d           = permute(repmat(rep_scale,[1 1 FORC.nlat FORC.nlon]),[3 4 1 2]);
+     rep_alloc_frac_P         = rep_scale_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,1:3,:)./structure.minf_4d).^(ECOL.b_allo(1)-1) - ECOL.eff_a);
+     rep_alloc_frac_D         = rep_scale_4d .* (1 - ECOL.eff_a) ./ ( (structure.fmass_4d(:,:,4:6,:)./structure.minf_4d).^(ECOL.b_allo(2)-1) - ECOL.eff_a);
+
+     structure.rep_alloc_frac = cat(3,rep_alloc_frac_P,rep_alloc_frac_D);
  else
      rep_scale_P              = nan(ECOL.nfish,ECOL.nfmass);
      for indf = 1:ECOL.nfish
@@ -158,6 +156,8 @@ function structure = set_structure(boats,varargin)
               [structure.fmass_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]       = function_map_2_vec(squeeze(structure.fmass_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.delfm_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]       = function_map_2_vec(squeeze(structure.delfm_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.mask_land_g_s_nan_vec(:,igroup,isize) FORC.indlat FORC.indlon]= function_map_2_vec(squeeze(structure.mask_land_g_s_nan(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
+              [structure.mask_notexist_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]= function_map_2_vec(squeeze(structure.mask_notexist_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));  
+              structure.mask_notexist_4d_vec=logical(structure.mask_notexist_4d_vec);
               [structure.selectivity_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon] = function_map_2_vec(squeeze(structure.selectivity_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.rep_alloc_frac_vec(:,igroup,isize) FORC.indlat FORC.indlon] = function_map_2_vec(squeeze(structure.rep_alloc_frac(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.delfm_4d_over_fmass_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]= function_map_2_vec(squeeze(structure.delfm_4d_over_fmass_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
@@ -173,8 +173,6 @@ function structure = set_structure(boats,varargin)
           for isize = 1:ECOL.nfmass
               [structure.minf_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]        = function_map_2_vec(squeeze(structure.minf_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.malpha_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]      = function_map_2_vec(squeeze(structure.malpha_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
-              [structure.mask_notexist_4d_vec(:,igroup,isize) FORC.indlat FORC.indlon]= function_map_2_vec(squeeze(structure.mask_notexist_4d(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));  
-              structure.mask_notexist_4d_vec=logical(structure.mask_notexist_4d_vec);
               [structure.minf_4d_p_bm1_P_vec(:,igroup,isize) FORC.indlat FORC.indlon]  = function_map_2_vec(squeeze(structure.minf_4d_p_bm1_P(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.minf_4d_p_bm1_D_vec(:,igroup,isize) FORC.indlat FORC.indlon]  = function_map_2_vec(squeeze(structure.minf_4d_p_bm1_D(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));
               [structure.fmass_4d_p_b_P_vec(:,igroup,isize) FORC.indlat FORC.indlon]   = function_map_2_vec(squeeze(structure.fmass_4d_p_b_P(:,:,igroup,isize)),squeeze(FORC.mask(:,:,1)));

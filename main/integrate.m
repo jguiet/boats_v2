@@ -361,7 +361,7 @@ for indt = 1:ntime
   % Representative benthis mass
   %-----------------------------------------------------------------------------------------------------------
   mbenthos = ENVI.mc_benthic;
-
+  
   %-----------------------------------------------------------------------------------------------------------
   % Growth rate
   %-----------------------------------------------------------------------------------------------------------
@@ -377,8 +377,8 @@ for indt = 1:ntime
       en_input_P(:,:,1:3,:) = bsxfun(@times,npp./mphyto, ...
                    (bsxfun(@rdivide,STRU.fmass_4d(:,:,1:3,:).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass])-1),mphyto.^(INIT.tro_sca(:,:,1)-1)) .* ... 
                    STRU.fmass_4d(:,:,1:3,:) ./ squeeze(dfish(:,:,1:3,:) + CONV.epsln) * part_PP_g));
-      en_input_P(:,:,4:6,:) = bsxfun(@times,pfb./mbenthos, ...
-                   (bsxfun(@rdivide,STRU.fmass_4d(:,:,4:6,:).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish ECOL.nfmass])-1),mbenthos.^(INIT.tro_sca(:,:,2)-1)) .* ... 
+      en_input_P(:,:,4:6,:) = bsxfun(@times,pfb./mbenthos(2), ...
+                   (bsxfun(@rdivide,STRU.fmass_4d(:,:,4:6,:).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish ECOL.nfmass])-1),mbenthos(2).^(INIT.tro_sca(1,1,2)-1)) .* ... 
                    STRU.fmass_4d(:,:,4:6,:) ./ squeeze(dfish(:,:,4:6,:) + CONV.epsln) * part_PP_g));
 %       en_input_P(:,:,1:3,:) = bsxfun(@times,npp./mphyto, ...
 %                    (STRU.fmass_4d(:,:,1:3,:) ./ repmat(mphyto,[1 1 ECOL.nfish ECOL.nfmass])).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish ECOL.nfmass])-1) .* ... 
@@ -445,7 +445,7 @@ for indt = 1:ntime
   % multiply by boundary condition partition function (part_PP_b)
   if (ECOL.pelagic)&&(ECOL.demersal)
       flux_in_P(:,:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,:,1),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
-      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos,[1 1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
+      flux_in_P(:,:,4:6) = part_PP_b * (repmat(pfb./mbenthos(2),[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbenthos(2),[1 1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,:,2),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,4,1);
   else
       flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 1 ECOL.nfish])).^(repmat(ECOL.tro_sca(:,:,1),[1 1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d(1,1,1,1);
   end
@@ -516,7 +516,7 @@ for indt = 1:ntime
   
     %-------------------------------------------------------------------------------------
     % Integrate dfish
-    %-------------------------------------------------------------------------------------
+    %------------------------------------------------------------------------------------- 
     dfish  = squeeze(dfish) + ( flux_in - flux_out + flux_fish_growth - mortality ) * MAIN.dtts;
     mask_dfish_neg = (squeeze(dfish) < 0);
     dfish(mask_dfish_neg)  = 0;

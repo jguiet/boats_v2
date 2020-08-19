@@ -80,12 +80,12 @@ function initial = initialize_domains(boats)
          dfish_D      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass])) .* repmat(pfb,[1 ECOL.nfish ECOL.nfmass]) ./ ...
          ( repmat(mortality0_D,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mbentho.^(initial.tro_sca(1,2)),[size(pfb,1) ECOL.nfish ECOL.nfmass]) .* ...
          STRU.minf_4d_vec.^(ECOL.h_allo(2) + ECOL.b_allo(2) - 1)) .* STRU.fmass_4d_vec(:,4:6,:).^(repmat(initial.tro_sca(:,2),[1 ECOL.nfish ECOL.nfmass]) + ECOL.h_allo(2) - 1);         
+         dfish = cat(2,dfish_P,dfish_D);
 
          %---------------------------------
          % Make non existent cells NaNs
-         dfish_P(STRU.mask_notexist_4d_vec) = NaN;
-         dfish_D(STRU.mask_notexist_4d_vec) = NaN;
-         initial.dfish = cat(2,dfish_P,dfish_D);
+         dfish(STRU.mask_notexist_4d_vec) = NaN;
+         initial.dfish = dfish;
      else
          dfish_P      = (1/ECOL.nfish) * (1 - repmat(initial.tro_sca(:,1),[1 ECOL.nfish ECOL.nfmass])) .* repmat(npp,[1 ECOL.nfish ECOL.nfmass]) ./ ...
          ( repmat(mortality0_P,[1 ECOL.nfish ECOL.nfmass]) .* repmat(mphyto.^(initial.tro_sca(:,1)),[1 ECOL.nfish ECOL.nfmass]) .* ...
