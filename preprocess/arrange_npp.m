@@ -23,6 +23,8 @@ function [npp npp_ed] = arrange_npp(npp,npp_unit,depth,depth_unit,dim,ed,depth_t
         npp=dm1_2_sm1(npp);
     elseif strcmp(npp_unit,'[mgC m^-2 d^-1]')
         npp=mgC_2_mmolC(dm1_2_sm1(npp));
+    elseif strcmp(npp_unit,'[molC m^-2 s^-1]')
+        npp=npp*1000;
     elseif strcmp(npp_unit,'??')
         disp('Aye, unit not considered yet for:')
         disp(surf_unit)
