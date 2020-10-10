@@ -169,8 +169,8 @@ function boats = integrate(boats)
     switch outmode.modes{indm}
     case 'all'
        % NOTE: For output every timestep, no checks/averaging required
-       odt = (30*sperd) /dtts; 
-       oendt = time(end)/dtts;
+       odt = (30*CONV.sperd) /MAIN.dtts; 
+       oendt = time(end)/MAIN.dtts;
        outmode.(tmode).it_bounds = [ [1:odt:oendt]' [odt:odt:oendt]'];
     case 'annual'
        % BOATS assumption is 12 months of 30 days 
@@ -415,12 +415,12 @@ for indt = 1:ntime
       temp_dep_m = cat(2,temp_dep_m_P,temp_dep_m_D);
   else
       temp_dep_A_P  = repmat(exp( (-ENVI.E_activation_A(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_A - 1/ENVI.temp_ref_A)),[1 ECOL.nfish ECOL.nfmass]);
-      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(2)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_m - 1/ENVI.temp_ref_A)),[1 ECOL.nfish ECOL.nfmass]);
+      temp_dep_m_P  = repmat(exp( (-ENVI.E_activation_m(1)/ENVI.k_Boltzmann) .* (1./temp_fish_pel_m - 1/ENVI.temp_ref_A)),[1 ECOL.nfish ECOL.nfmass]);
       A_P 	      = A0(1) .* temp_dep_A_P;
       ka_P 	      = A_P * ECOL.eff_a .* STRU.minf_4d_p_bm1_P_vec;                      %  A * eff_a .* minf_4d.^(b_allo-1) (s-1)
       en_input_vb = A_P .* STRU.fmass_4d_p_b_P_vec - ka_P .* STRU.fmass_4d_vec;              % A .* fmass_4d.^b_allo - ka .* fmass_4d;
       
-      temp_dep_m = temp_dep_m_p;
+      temp_dep_m = temp_dep_m_P;
   end
   
   %---------------------------------------------------------------------------------------
@@ -452,7 +452,7 @@ for indt = 1:ntime
       flux_in_P(:,1:3) = part_PP_b * (repmat(npp./mphyto,[1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 ECOL.nfish])).^(repmat(INIT.tro_sca(:,1),[1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d_vec(1,1,1);
       flux_in_P(:,4:6) = part_PP_b * (repmat(pfb./mbentho,[1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mbentho,[size(pfb,1) ECOL.nfish])).^(repmat(INIT.tro_sca(:,2),[1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d_vec(1,4,1);
   else
-      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 ECOL.nfish])).^(INIT.tro_sca(1)-1) * STRU.fmass_bc / STRU.delfm_4d_vec(1,1,1);
+      flux_in_P = part_PP_b * (repmat(npp./mphyto,[1 ECOL.nfish])) .* (STRU.fmass_bc./repmat(mphyto,[1 ECOL.nfish])).^(repmat(INIT.tro_sca(:),[1 ECOL.nfish])-1) * STRU.fmass_bc / STRU.delfm_4d_vec(1,1,1);
   end
   %---------------------------------------------------------------------------------------
   % Flux in of number of eggs produced
@@ -463,7 +463,7 @@ for indt = 1:ntime
         nansum( STRU.rep_alloc_frac_vec(:,4:6,:) .* en_input(:,4:6,:) .* squeeze(dfish(:,4:6,:)) .* STRU.delfm_4d_over_fmass_4d_vec(:,4:6,:),3) / STRU.delfm_4d_vec(1,4,1);
   else
       flux_in_num_eggs = (ECOL.frac_fem/ECOL.m_egg) .* ...
-        nansum( STRU.rep_alloc_frac_vec .* en_input .* squeeze(dfish) .* STRU.delfm_4d_over_fmass_4d_vec,4) / STRU.delfm_4d_vec(1,1,1);
+        nansum( STRU.rep_alloc_frac_vec .* en_input .* squeeze(dfish) .* STRU.delfm_4d_over_fmass_4d_vec,3) / STRU.delfm_4d_vec(1,1,1);
   end
   %---------------------------------------------------------------------------------------
   % Boundary condition based on recruitment (production and survival of eggs)
